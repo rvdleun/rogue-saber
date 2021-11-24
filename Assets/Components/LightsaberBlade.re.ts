@@ -3,7 +3,7 @@ import { Prop, Runtime } from 'rogue-engine';
 import { Object3D } from 'three';
 
 export default class LightsaberBlade extends RE.Component {
-  active: boolean = false;
+  public static active: boolean = false;
 
   private length: number;
   private maxLength: number;
@@ -19,7 +19,8 @@ export default class LightsaberBlade extends RE.Component {
   }
 
   update() {
-    const { active, length, maxLength, maxPosition } = this;
+    const { active } = LightsaberBlade;
+    const { length, maxLength, maxPosition } = this;
 
     if (
         (active && length === 1) ||
@@ -33,7 +34,7 @@ export default class LightsaberBlade extends RE.Component {
   }
 
   toggle() {
-    this.active = !this.active;
+    LightsaberBlade.active = !LightsaberBlade.active;
   }
 }
 
