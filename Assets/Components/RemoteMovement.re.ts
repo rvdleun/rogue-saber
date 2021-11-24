@@ -20,8 +20,6 @@ export default class RemoteMovement extends RE.Component {
   }
 
   update() {
-    return;
-
     if (this.positionTime > 0) {
       this.updatePosition();
     }
@@ -50,8 +48,6 @@ export default class RemoteMovement extends RE.Component {
     const change = Runtime.deltaTime;
     this.object3d.position.y = Math.max(-1.4, Math.min(.5, this.object3d.position.y + (positionDirection * change)));
     this.positionTime -= change;
-
-    console.log(this.object3d.position.y);
   }
 
   updateRotation() {
