@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+
+  <title>Rogue LAN Player</title>
+
+  <style>
+    html, body, #rogue-app {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      background-color: #252933;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <noscript>
+    You need to enable JavaScript to run this app.
+  </noscript>
+  <div id="rogue-app"></div>
+  <script src="/dist/engine-bundle.js"></script>
+  <script src="/dist/rogue-engine-user-scripts.js"></script>
+  <script>
+    if (global === undefined) {
+      var global = window;
+    }
+
+    init();
+
+    async function init() {
+      window['ROGUE_ISDEV'] = true;
+
+      const RE = window["rogue-engine"];
+      const THREE = window["three"];
+
+      RE.Input.mouse.init();
+      RE.Input.keyboard.init();
+      RE.Input.touch.init();
+
+      const res = await fetch("/getScenePlayerConfig");
+      const {appConfig, sceneJson, assetPaths} = await res.json();
+
+      console.log({appConfig, sceneJson, assetPaths});
+
+      RE.AssetManager.setAssetPaths(assetPaths || {});
+      RE.AssetManager.loadAssetConfigs(sceneJson.assetConfigs);
+
+      RE.App.fromJSON(appConfig);
+      RE.App.activeCamera = sceneJson.initialCameraId;
+      RE.App.sceneController = RE.Runtime;
+      RE.App.currentScene = new THREE.ObjectLoader().parse(sceneJson.scene);
+
+      RE.initComponents( RE.App.currentScene, sceneJson.components );
+
+      await RE.AssetManager.preloadAssets();
+
+      RE.Skybox.init(sceneJson.skybox);
+      RE.Runtime.play(RE.App.currentScene);
+    }
+  </script>
+</body>
+</html>
