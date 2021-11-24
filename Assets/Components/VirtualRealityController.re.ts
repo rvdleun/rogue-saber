@@ -9,7 +9,7 @@ export default class VirtualRealityController extends RE.Component {
   private controller: Group;
   private grip: Group;
 
-  start() {
+  awake() {
     const { renderer } = Runtime;
     this.controller = renderer.xr.getController(this.controllerId);
     this.grip = renderer.xr.getControllerGrip(this.controllerId);

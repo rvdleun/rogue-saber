@@ -8,8 +8,11 @@ export default class Lightsaber extends RE.Component {
   @Prop("Object3D")
   blade: Object3D;
 
+  @Prop("Object3D")
+  controller: Object3D;
+
   start() {
-    const vrController = getComponent(VirtualRealityController, this.object3d.parent?.parent as Object3D)
+    const vrController = getComponent(VirtualRealityController, this.controller)
     vrController?.addEventListener("selectstart", this.onSelectStart);
   }
 
