@@ -1,16 +1,9 @@
 import * as RE from 'rogue-engine';
 import { Prop, Runtime } from 'rogue-engine';
-import { Box3, MathUtils, Mesh, Object3D } from 'three';
+import { MathUtils, Object3D, Raycaster, Vector3 } from 'three';
 
-function generateBox3(mesh: Mesh) {
-  const box = new Box3();
-
-  mesh.geometry.computeBoundingBox();
-
-  box.copy( mesh.geometry.boundingBox as Box3).applyMatrix4( mesh.matrixWorld );
-
-  return box;
-}
+const direction = new Vector3();
+const origin = new Vector3();
 
 export default class Laser extends RE.Component {
   public static setBladeCollider(collider: Object3D) {
@@ -25,7 +18,13 @@ export default class Laser extends RE.Component {
   public speed: number = 1;
 
   private firstUpdate = true;
+  private raycaster: Raycaster;
   private reflected = false;
+
+  start() {
+    this.raycaster = new Raycaster();
+    this.raycaster.far = 0.2;
+  }
 
   update() {
     const { firstUpdate, reflected } = this;
@@ -41,11 +40,13 @@ export default class Laser extends RE.Component {
       return;
     }
 
-    const bladeBox = generateBox3(Laser.bladeCollider as Mesh);
-    const laserBox = generateBox3(this.collider as Mesh);
+    this.object3d.getWorldDirection(direction);
+    origin.copy(this.object3d.position);
+    this.raycaster.set(origin, direction);
 
-    if(bladeBox.intersectsBox(laserBox)) {
-      console.log('BOOM');
+    const collides = this.raycaster.intersectObject(Laser.bladeCollider, true).length > 0;
+
+    if(collides) {
       this.reflected = true;
 
       const x = MathUtils.degToRad((Math.random() * 80) + 140);

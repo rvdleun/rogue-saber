@@ -17,7 +17,7 @@ export default class RemoteFire extends RE.Component {
     }
 
     this.fire();
-    this.nextFire = Math.random() * 5;
+    this.nextFire = .5 + Math.random() * 2;
   }
 
   fire() {
@@ -26,11 +26,10 @@ export default class RemoteFire extends RE.Component {
 
     const vector = new Vector3();
     Runtime.renderer.xr.getCamera(Runtime.camera).getWorldPosition(vector);
-    console.log(vector);
 
-    vector.x += -.4 + (Math.random() + .8);
-    vector.y += -.3 + (Math.random() + .6);
-    vector.z += -.4 + (Math.random() + .8);
+    vector.x += -.25 + (Math.random() * .5);
+    vector.y += -.3 + (Math.random() * .3);
+    vector.z += -.25 + (Math.random() * .5);
     laser.lookAt(vector);
   }
 }
