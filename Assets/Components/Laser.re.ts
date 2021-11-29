@@ -18,6 +18,7 @@ export default class Laser extends RE.Component {
   public speed: number = 1;
 
   private firstUpdate = true;
+  private timeToLive = 20;
   private raycaster: Raycaster;
   private reflected = false;
 
@@ -28,6 +29,12 @@ export default class Laser extends RE.Component {
 
   update() {
     const { firstUpdate, reflected } = this;
+
+    this.timeToLive-=Runtime.deltaTime;
+    if (this.timeToLive < 0) {
+      Runtime.scene.remove(this.object3d);
+      return;
+    }
 
     if (firstUpdate) {
       this.firstUpdate = false;
