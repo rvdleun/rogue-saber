@@ -3,6 +3,7 @@ import { Prefab, Prop, Runtime } from 'rogue-engine';
 import { Vector3 } from 'three';
 import LightsaberBlade from './LightsaberBlade.re';
 
+const vector = new Vector3();
 export default class RemoteFire extends RE.Component {
   @Prop("Prefab")
   laserPrefab: Prefab;
@@ -24,7 +25,6 @@ export default class RemoteFire extends RE.Component {
     const laser = this.laserPrefab.instantiate();
     this.object3d.getWorldPosition(laser.position);
 
-    const vector = new Vector3();
     Runtime.renderer.xr.getCamera(Runtime.camera).getWorldPosition(vector);
 
     vector.x += -.25 + (Math.random() * .5);

@@ -1,9 +1,13 @@
 import * as RE from 'rogue-engine';
-import { Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils';
-import { Runtime } from 'rogue-engine';
+import { Prop, Runtime } from 'rogue-engine';
+import { Vector3 } from 'three';
 
+const vector = new Vector3();
 export default class RemoteMovement extends RE.Component {
+  @Prop("Object3D")
+  private model: THREE.Object3D;
+
   nextPosition: number = 0;
   nextRotation: number = 0;
 
@@ -40,7 +44,8 @@ export default class RemoteMovement extends RE.Component {
       this.nextRotation = 1 + Math.random() * 2;
     }
 
-    return;
+    Runtime.renderer.xr.getCamera(Runtime.camera).getWorldPosition(vector);
+    this.model.lookAt(vector);
   }
 
   updatePosition() {
