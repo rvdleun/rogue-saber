@@ -15,3 +15,8 @@ Learning Rogue Engine with lightsabers
     * TODO: Have the XR camera start on this object3D's position
   * VirtualRealityController: Syncs position and rotation with a XR controller
     * TODO: Only seems to work for the left controller.
+
+# Models
+* bot drone by Dave404 [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/2iyQx2YscRq)
+* Empty Island by Cheryl Fong [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/f-xl-C5VBuo)
+* Luke's Lightsaber by Beren Kusmenoglu [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/36AnCHRQmia)
