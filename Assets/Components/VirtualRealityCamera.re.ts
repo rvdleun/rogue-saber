@@ -5,14 +5,11 @@ import { Runtime } from 'rogue-engine';
 export default class VirtualRealityCamera extends RE.Component {
   start() {
 
-    const { camera, renderer, scene } = Runtime;
+    const { renderer } = Runtime;
 
     renderer.xr.enabled = true;
-    document.body.appendChild( VRButton.createButton( renderer ) );
-
-    // renderer.setAnimationLoop( function () {
-    //   renderer.render( scene, camera );
-    // } );
+    const button = VRButton.createButton( renderer );
+    document.querySelector("#rogue-ui")?.appendChild( button );
   }
 }
 
