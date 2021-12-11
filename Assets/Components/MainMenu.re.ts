@@ -19,9 +19,10 @@ export default class MainMenu extends RE.Component {
     const menu = document.createElement('div');
     menu.setAttribute('id', 'rogue-saber-main-menu');
 
+    const currentColor = window.localStorage.getItem(LOCAL_STORAGE_KEY_BLADE_COLOR) || `#${this.bladeDefaultColor.getHexString()}`;
     const inputColor = document.createElement('input');
     inputColor.setAttribute('type', 'color');
-    inputColor.setAttribute('value', '#ff7700');
+    inputColor.setAttribute('value', currentColor);
     inputColor.addEventListener('change', e => this.setBladeColor(inputColor.value));
     menu.appendChild(inputColor);
 
@@ -29,7 +30,7 @@ export default class MainMenu extends RE.Component {
 
     this.inputColor = inputColor;
 
-    this.setBladeColor(window.localStorage.getItem(LOCAL_STORAGE_KEY_BLADE_COLOR) || `#${this.bladeDefaultColor.getHexString()}`);
+    this.setBladeColor(currentColor);
   }
 
   setBladeColor(color: string): void {

@@ -1,15 +1,8 @@
 import * as RE from 'rogue-engine';
-import { Prop, Runtime } from 'rogue-engine';
-import { PositionalAudio } from 'three';
+import { Runtime } from 'rogue-engine';
 
 export default class LightsaberBlade extends RE.Component {
   public static active: boolean = false;
-
-  @Prop("PositionalAudio")
-  sfxTurnOff: PositionalAudio;
-
-  @Prop("PositionalAudio")
-  sfxTurnOn: PositionalAudio;
 
   private length: number;
   private maxLength: number;
@@ -34,19 +27,13 @@ export default class LightsaberBlade extends RE.Component {
       return;
     }
 
-    this.length = Math.min(1, Math.max(0, length + Runtime.deltaTime * (active ? 2 : -1.25)));
+    this.length = Math.min(1, Math.max(0, length + Runtime.deltaTime * (active ? 2 : -.7)));
     this.object3d.position.y = maxPosition * this.length;
     this.object3d.scale.y = maxLength * this.length;
   }
 
   toggle() {
     LightsaberBlade.active = !LightsaberBlade.active;
-
-    if (LightsaberBlade.active) {
-      this.sfxTurnOn.play();
-    } else {
-      this.sfxTurnOff.play();
-    }
   }
 }
 
