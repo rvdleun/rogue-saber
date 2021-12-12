@@ -3,6 +3,7 @@ import { Prefab, Prop, Runtime } from 'rogue-engine';
 import { PositionalAudio, Vector3 } from 'three';
 import LightsaberBlade from './LightsaberBlade.re';
 
+const warmUpTime = 2;
 const vector = new Vector3();
 export default class RemoteFire extends RE.Component {
   @Prop("Boolean")
@@ -23,7 +24,6 @@ export default class RemoteFire extends RE.Component {
       const audio = new PositionalAudio(this.fireSound.listener);
       audio.setBuffer(this.fireSound.buffer as AudioBuffer);
 
-      console.log(this.fireSound.buffer);
       this.fireSounds.push(audio);
       this.object3d.add(audio);
     }
@@ -36,12 +36,12 @@ export default class RemoteFire extends RE.Component {
       return;
     }
 
+    this.nextFire = .5 + Math.random() * 2;
+
     if ((this.alwaysFire || LightsaberBlade.active )) {
       this.fire();
+      this.playAudio();
     }
-
-    this.nextFire = .5 + Math.random() * 2;
-    this.playAudio();
   }
 
   playAudio() {
@@ -53,8 +53,14 @@ export default class RemoteFire extends RE.Component {
     }
 
     const fireSound = this.fireSounds[this.currentAudio];
-    fireSound.offset = 2 - this.nextFire;
-    fireSound.play();
+    
+    if (this.nextFire > warmUpTime) {
+      fireSound.offset = 0;
+      fireSound.play(this.nextFire - warmUpTime);
+    } else {
+      fireSound.offset = warmUpTime - this.nextFire;
+      fireSound.play(0);
+    }
   }
 
   fire() {
