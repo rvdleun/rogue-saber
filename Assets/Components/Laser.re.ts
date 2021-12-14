@@ -1,5 +1,5 @@
 import * as RE from 'rogue-engine';
-import { Prop, Runtime } from 'rogue-engine';
+import { Prefab, Prop, Runtime } from 'rogue-engine';
 import { MathUtils, Object3D, Raycaster, Vector3 } from 'three';
 
 const direction = new Vector3();
@@ -13,6 +13,9 @@ export default class Laser extends RE.Component {
 
   @Prop("Object3D")
   public collider: Object3D;
+
+  @Prop("Prefab")
+  laserDeflectPrefab: Prefab;
 
   @Prop("Number")
   public speed: number = 1;
@@ -55,6 +58,10 @@ export default class Laser extends RE.Component {
 
     if(collides) {
       this.reflected = true;
+
+      const deflection = this.laserDeflectPrefab.instantiate();
+      this.object3d.getWorldPosition(deflection.position);
+      console.log('ADDING THE THING');
 
       const x = MathUtils.degToRad((Math.random() * 80) + 140);
       const y = MathUtils.degToRad((Math.random() * 40) - 20);

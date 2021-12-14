@@ -34,13 +34,11 @@ export default class MainMenu extends RE.Component {
   }
 
   setBladeColor(color: string): void {
-    return;
-    //
-    // const bladeGlow = this.bladeGlow as Mesh;
-    // const material = bladeGlow.material as MeshStandardMaterial;
-    // material.color = new Color(color);
-    //
-    // window.localStorage.setItem(LOCAL_STORAGE_KEY_BLADE_COLOR, color);
+    const bladeGlow = this.bladeGlow as Mesh;
+    const material = bladeGlow.material as MeshStandardMaterial;
+    material.color = new Color(color);
+
+    window.localStorage.setItem(LOCAL_STORAGE_KEY_BLADE_COLOR, color);
   }
 }
 
