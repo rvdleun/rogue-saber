@@ -1,7 +1,6 @@
 import * as RE from 'rogue-engine';
 import { Water as WaterFX } from 'three/examples/jsm/objects/Water2';
-import { Color, Mesh, PlaneGeometry, Texture, Vector2 } from 'three';
-import { Runtime } from 'rogue-engine';
+import { Mesh, PlaneGeometry, Texture, Vector2 } from 'three';
 
 export default class Water extends RE.Component {
   start() {

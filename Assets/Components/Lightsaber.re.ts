@@ -2,7 +2,7 @@ import * as RE from 'rogue-engine';
 import { getComponent, Prop } from 'rogue-engine';
 import LightsaberBlade from './LightsaberBlade.re';
 import VirtualRealityController from './VirtualRealityController.re';
-import { Object3D, PositionalAudio } from 'three';
+import { Object3D } from 'three';
 import LightsaberAudio from './LightsaberAudio.re';
 
 export default class Lightsaber extends RE.Component {

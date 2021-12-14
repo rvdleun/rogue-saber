@@ -1,7 +1,6 @@
 import * as RE from 'rogue-engine';
-import { AudioLoader, PositionalAudio } from 'three';
-import { AudioAsset, Prefab, Prop, Runtime } from 'rogue-engine';
-import SceneController from '../../_Rogue/Engine/Model/SceneController';
+import { PositionalAudio } from 'three';
+import { AudioAsset, Prop, Runtime } from 'rogue-engine';
 
 const assets = ['lasrhit1.wav', 'lasrhit2.WAV', 'lasrhit3.WAV', 'lasrhit4.WAV'].map(async audio => {
   return AudioAsset.fromFile(`/Assets/Audio/sabersounds/${audio}`)
