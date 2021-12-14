@@ -9,7 +9,7 @@ export default class VirtualRealityCamera extends RE.Component {
 
     renderer.xr.enabled = true;
     const button = VRButton.createButton( renderer );
-    document.querySelector("#rogue-ui")?.appendChild( button );
+    document.body.appendChild( button );
   }
 }
 

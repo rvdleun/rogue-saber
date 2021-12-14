@@ -3,11 +3,13 @@ import { Prefab, Prop, Runtime } from 'rogue-engine';
 import { PositionalAudio, Vector3 } from 'three';
 import LightsaberBlade from './LightsaberBlade.re';
 
-const warmUpTime = 2;
 const vector = new Vector3();
 export default class RemoteFire extends RE.Component {
   @Prop("Boolean")
   alwaysFire: boolean = false;
+
+  @Prop("PositionalAudio")
+  chargeSound: PositionalAudio;
 
   @Prop("PositionalAudio")
   fireSound: PositionalAudio;
@@ -17,9 +19,12 @@ export default class RemoteFire extends RE.Component {
 
   private currentAudio = 0;
   private nextFire = 1;
+  private nextFires: number[] = [];
   private fireSounds: PositionalAudio[] = [];
 
   start() {
+    this.chargeSound.setPlaybackRate(1.2);
+
     for(let i = 0; i < 10; i++) {
       const audio = new PositionalAudio(this.fireSound.listener);
       audio.setBuffer(this.fireSound.buffer as AudioBuffer);
@@ -36,31 +41,42 @@ export default class RemoteFire extends RE.Component {
       return;
     }
 
-    this.nextFire = .5 + Math.random() * 2;
+    if (!this.alwaysFire && !LightsaberBlade.active ) {
+      this.nextFires = [];
+      this.nextFires.push(2 + Math.random() * 3);
+      return;
+    }
 
-    if ((this.alwaysFire || LightsaberBlade.active )) {
+    const willFire = this.nextFires.length > 1;
+    if (this.nextFires.length === 0) {
+      const numberOfFires = 2 + (Math.random() * 4);
+      this.nextFires.push(1.5);
+
+      for(let i = 0; i < numberOfFires; i++) {
+        this.nextFires.push(.1 + (Math.random() * .4));
+      }
+
+      this.nextFires.push(1.5 + Math.random() * 2.5);
+      this.chargeSound.play();
+    }
+
+    this.nextFire = this.nextFires.shift() as number;
+
+    if (willFire) {
       this.fire();
       this.playAudio();
     }
   }
 
   playAudio() {
-    console.log(this.nextFire);
-
     this.currentAudio++;
     if (this.currentAudio >= this.fireSounds.length) {
       this.currentAudio = 0;
     }
 
     const fireSound = this.fireSounds[this.currentAudio];
-    
-    if (this.nextFire > warmUpTime) {
-      fireSound.offset = 0;
-      fireSound.play(this.nextFire - warmUpTime);
-    } else {
-      fireSound.offset = warmUpTime - this.nextFire;
-      fireSound.play(0);
-    }
+    fireSound.setPlaybackRate(.8 + (Math.random() * .7));
+    fireSound.play();
   }
 
   fire() {
