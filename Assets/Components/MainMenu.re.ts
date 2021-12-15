@@ -1,6 +1,7 @@
 import * as RE from 'rogue-engine';
-import { Prop } from 'rogue-engine';
-import { Color, Mesh, MeshStandardMaterial, Object3D } from 'three';
+import { getComponent, Prop } from 'rogue-engine';
+import { Color, Light, Mesh, MeshStandardMaterial, Object3D } from 'three';
+import LightsaberGlow from './LightsaberGlow.re';
 
 const LOCAL_STORAGE_KEY_BLADE_COLOR = 'rogue-saber.blade-color';
 
@@ -35,9 +36,8 @@ export default class MainMenu extends RE.Component {
   }
 
   setBladeColor(color: string): void {
-    const bladeGlow = this.bladeGlow as Mesh;
-    const material = bladeGlow.material as MeshStandardMaterial;
-    material.color = new Color(color);
+    const bladeGlow = getComponent(LightsaberGlow, this.bladeGlow) as LightsaberGlow;
+    bladeGlow.color = new Color(color);
 
     window.localStorage.setItem(LOCAL_STORAGE_KEY_BLADE_COLOR, color);
   }
