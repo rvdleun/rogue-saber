@@ -14,10 +14,11 @@ export default class MainMenu extends RE.Component {
   private inputColor: HTMLInputElement;
 
   awake() {
-    const ui = document.querySelector('#rogue-ui') as HTMLDivElement;
+    const ui = document.body as HTMLDivElement;
 
     const menu = document.createElement('div');
     menu.setAttribute('id', 'rogue-saber-main-menu');
+    menu.setAttribute('style', 'position: fixed; top: 0; left: 0')
 
     const currentColor = window.localStorage.getItem(LOCAL_STORAGE_KEY_BLADE_COLOR) || `#${this.bladeDefaultColor.getHexString()}`;
     const inputColor = document.createElement('input');

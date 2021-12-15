@@ -53,11 +53,15 @@ export default class RemoteFire extends RE.Component {
       this.nextFires.push(1.5);
 
       for(let i = 0; i < numberOfFires; i++) {
-        this.nextFires.push(.1 + (Math.random() * .4));
+        this.nextFires.push(.25 + (Math.random() * .35));
       }
 
       this.nextFires.push(1.5 + Math.random() * 2.5);
       this.chargeSound.play();
+
+      vector.x += -.25 + (Math.random() * .5);
+      vector.y += -.3 + (Math.random() * .3);
+      vector.z += -.25 + (Math.random() * .5);
     }
 
     this.nextFire = this.nextFires.shift() as number;
@@ -85,9 +89,9 @@ export default class RemoteFire extends RE.Component {
 
     Runtime.renderer.xr.getCamera(Runtime.camera).getWorldPosition(vector);
 
-    vector.x += -.25 + (Math.random() * .5);
-    vector.y += -.3 + (Math.random() * .3);
-    vector.z += -.25 + (Math.random() * .5);
+    vector.x += -.05 + (Math.random() * .1);
+    vector.y += -.05 + (Math.random() * .1);
+    vector.z += -.05 + (Math.random() * .1);
     laser.lookAt(vector);
   }
 }
