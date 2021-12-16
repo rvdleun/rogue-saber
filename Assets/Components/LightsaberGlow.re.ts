@@ -12,6 +12,7 @@ export default class LightsaberGlow extends RE.Component {
   update() {
     this.flicker += this.flickerDirection * Runtime.deltaTime * (3 + (Math.random() * 2));
     if (Math.abs(this.flicker) > 1) {
+      this.flicker = Math.max(-1, Math.min(1, this.flicker));
       this.flickerDirection *= -1;
     }
 
@@ -20,8 +21,6 @@ export default class LightsaberGlow extends RE.Component {
     const bladeGlow = this.object3d as Mesh;
     const material = bladeGlow.material as MeshStandardMaterial;
     material.color.setRGB(this.color.r + flicker, this.color.g + flicker, this.color.b + flicker);
-
-    console.log(flicker);
   }
 
 }
