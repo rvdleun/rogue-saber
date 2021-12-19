@@ -1,7 +1,6 @@
 import * as RE from 'rogue-engine';
 import { Prefab, Prop, Runtime } from 'rogue-engine';
-import { PositionalAudio, Vector3 } from 'three';
-import LightsaberBlade from './LightsaberBlade.re';
+import { Mesh, MeshPhysicalMaterial, PositionalAudio, Vector3 } from 'three';
 
 const vector = new Vector3();
 export default class RemoteFire extends RE.Component {
@@ -18,7 +17,9 @@ export default class RemoteFire extends RE.Component {
   laserPrefab: Prefab;
 
   private currentAudio = 0;
+  private charging = false;
   private firing = false;
+  private remoteMaterial: MeshPhysicalMaterial;
   private nextFire = 0;
   private nextFires: number[] = [];
   private fireSounds: PositionalAudio[] = [];
@@ -33,6 +34,22 @@ export default class RemoteFire extends RE.Component {
       this.fireSounds.push(audio);
       this.object3d.add(audio);
     }
+
+    this.object3d.parent?.traverse((child: Mesh) => {
+      if (!child.isMesh) {
+        return;
+      }
+
+      const material = child.material as MeshPhysicalMaterial;
+      if (material.color.r > .5 && material.color.g < .5 && material.color.b < .5) {
+        if (!this.remoteMaterial) {
+          this.remoteMaterial = material.clone();
+          this.remoteMaterial.color.setRGB(1, 1, 1);
+        }
+
+        child.material = this.remoteMaterial;
+      }
+    });
   }
 
   update() {
@@ -41,11 +58,20 @@ export default class RemoteFire extends RE.Component {
     }
 
     this.nextFire-=Runtime.deltaTime;
+    if (this.charging) {
+      this.remoteMaterial.color.setRGB(1, this.nextFire / 3, this.nextFire / 3);
+    }
+
     if (this.nextFire > 0) {
       return;
     }
 
+    if (this.charging) {
+      this.remoteMaterial.color.setRGB(1, 1, 1);
+    }
+
     this.fire();
+    this.charging = false;
     this.firing = this.nextFires.length > 0;
     this.nextFire = this.nextFires.shift() as number;
   }
@@ -58,6 +84,7 @@ export default class RemoteFire extends RE.Component {
     }
 
     this.chargeSound.play();
+    this.charging = true;
     this.firing = true;
     this.nextFire = 1.5;
 
