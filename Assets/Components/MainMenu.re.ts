@@ -46,7 +46,7 @@ export default class MainMenu extends RE.Component {
     colorDiv.style.marginRight = 'auto';
     colorDiv.style.padding = '15px 15px 5px 15px';
     colorDiv.style.height = '50px';
-    colorDiv.style.width = '80vw';
+    colorDiv.style.width = '750px';
     colorDiv.style.border = 'solid 3px white';
     colorDiv.style.borderRadius = '30px';
     ui.appendChild(colorDiv);
@@ -66,7 +66,7 @@ export default class MainMenu extends RE.Component {
     colorSelect.style.color = 'white';
     colorSelect.style.fontFamily = 'sans-serif';
     colorSelect.style.fontSize = '32px';
-    colorSelect.style.marginRight = '50px';
+    colorSelect.style.marginRight = '20px';
     colorSelect.style.float = 'right';
     colorSelect.style.height = '40px';
     colorSelect.style.width = '150px';
@@ -99,7 +99,7 @@ export default class MainMenu extends RE.Component {
     numberOfDronesDiv.style.marginTop = '25px';
     numberOfDronesDiv.style.padding = '15px 15px 5px 15px';
     numberOfDronesDiv.style.height = '50px';
-    numberOfDronesDiv.style.width = '80vw';
+    numberOfDronesDiv.style.width = '750px';
     numberOfDronesDiv.style.border = 'solid 3px white';
     numberOfDronesDiv.style.borderRadius = '30px';
     ui.appendChild(numberOfDronesDiv);
@@ -119,7 +119,7 @@ export default class MainMenu extends RE.Component {
     numberOfDronesSelect.style.color = 'white';
     numberOfDronesSelect.style.fontFamily = 'sans-serif';
     numberOfDronesSelect.style.fontSize = '32px';
-    numberOfDronesSelect.style.marginRight = '50px';
+    numberOfDronesSelect.style.marginRight = '20px';
     numberOfDronesSelect.style.float = 'right';
     numberOfDronesSelect.style.height = '40px';
     numberOfDronesSelect.style.width = '150px';
@@ -141,17 +141,26 @@ export default class MainMenu extends RE.Component {
 
     renderer.xr.enabled = true;
     const button = VRButton.createButton( renderer );
-    setInterval(() => {
+    setTimeout(() => {
+      button.style.backgroundColor = 'rgba(50, 255, 50, .1)';
       button.style.border = 'solid 3px white';
+      button.style.borderRadius = '30px';
       button.style.color = 'white';
-      button.style.marginTop = '30px';
+      button.style.marginTop = '50px';
       button.style.opacity = '1';
       button.style.position = '';
       button.style.fontFamily = 'fantasy';
       button.style.fontSize = '32px';
       button.innerHTML = 'Start Game';
       button.style.height = '70px';
-      button.style.width = '80vw';
+      button.style.width = '750px';
+      button.style.transition = '2s background-color';
+
+      let alpha = true;
+      setInterval(() => {
+        button.style.backgroundColor = `rgba(128, 255, 128, ${alpha ? .2 : .1})`;
+        alpha = !alpha;
+      }, 2000);
     });
     ui.appendChild( button );
 
