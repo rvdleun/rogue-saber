@@ -18,7 +18,8 @@ export default class RemoteFire extends RE.Component {
   laserPrefab: Prefab;
 
   private currentAudio = 0;
-  private nextFire = 1;
+  private firing = false;
+  private nextFire = 0;
   private nextFires: number[] = [];
   private fireSounds: PositionalAudio[] = [];
 
@@ -35,41 +36,36 @@ export default class RemoteFire extends RE.Component {
   }
 
   update() {
-    this.nextFire-=Runtime.deltaTime;
+    if (!this.firing) {
+      return;
+    }
 
+    this.nextFire-=Runtime.deltaTime;
     if (this.nextFire > 0) {
       return;
     }
 
-    if (!this.alwaysFire && !LightsaberBlade.active ) {
-      this.nextFires = [];
-      this.nextFires.push(2 + Math.random() * 3);
-      return;
-    }
-
-    const willFire = this.nextFires.length > 1;
-    if (this.nextFires.length === 0) {
-      const numberOfFires = 2 + (Math.random() * 4);
-      this.nextFires.push(1.5);
-
-      for(let i = 0; i < numberOfFires; i++) {
-        this.nextFires.push(.25 + (Math.random() * .35));
-      }
-
-      this.nextFires.push(1.5 + Math.random() * 2.5);
-      this.chargeSound.play();
-
-      vector.x += -.25 + (Math.random() * .5);
-      vector.y += -.3 + (Math.random() * .3);
-      vector.z += -.25 + (Math.random() * .5);
-    }
-
+    this.fire();
+    this.firing = this.nextFires.length > 0;
     this.nextFire = this.nextFires.shift() as number;
+  }
 
-    if (willFire) {
-      this.fire();
-      this.playAudio();
+  startFiring(): number {
+    const numberOfFires = 2 + (Math.random() * 4);
+
+    for(let i = 0; i < numberOfFires; i++) {
+      this.nextFires.push(.25 + (Math.random() * .35));
     }
+
+    this.chargeSound.play();
+    this.firing = true;
+    this.nextFire = 1.5;
+
+    vector.x += -.25 + (Math.random() * .5);
+    vector.y += -.3 + (Math.random() * .3);
+    vector.z += -.25 + (Math.random() * .5);
+
+    return this.nextFires.reduce((result, value) => result + value, 1.5);
   }
 
   playAudio() {
@@ -93,6 +89,8 @@ export default class RemoteFire extends RE.Component {
     vector.y += -.05 + (Math.random() * .1);
     vector.z += -.05 + (Math.random() * .1);
     laser.lookAt(vector);
+
+    this.playAudio();
   }
 }
 
