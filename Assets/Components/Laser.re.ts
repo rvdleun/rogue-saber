@@ -61,7 +61,6 @@ export default class Laser extends RE.Component {
 
       const deflection = this.laserDeflectPrefab.instantiate();
       this.object3d.getWorldPosition(deflection.position);
-      console.log('ADDING THE THING');
 
       const x = MathUtils.degToRad((Math.random() * 80) + 140);
       const y = MathUtils.degToRad((Math.random() * 40) - 20);

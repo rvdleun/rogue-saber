@@ -3,6 +3,7 @@ import { getComponent, Prop, Runtime } from 'rogue-engine';
 import { Color, Object3D } from 'three';
 import LightsaberGlow from './LightsaberGlow.re';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
+import RemotesController from './RemotesController.re';
 
 const LOCAL_STORAGE_KEY_BLADE_COLOR = 'rogue-saber.blade-color';
 const LOCAL_STORAGE_KEY_NUMBER_OF_DRONES = 'rogue-saber.number-of-drones';
@@ -16,6 +17,9 @@ export default class MainMenu extends RE.Component {
 
   @Prop("Number")
   private defaultNumberOfDrones = 1;
+
+  @Prop("Object3D")
+  private remotesController: Object3D;
 
   private inputColor: HTMLInputElement;
 
@@ -127,7 +131,7 @@ export default class MainMenu extends RE.Component {
     numberOfDronesSelect.addEventListener('focus', () => numberOfDronesSelect.style.outline = 'none');
     numberOfDronesDiv.appendChild(numberOfDronesSelect);
 
-    [1,2,3].forEach(numberOfDrones => {
+    [1,2,3,4].forEach(numberOfDrones => {
       const option = document.createElement('option');
       option.setAttribute('value', numberOfDrones.toString(10));
       option.innerHTML = numberOfDrones.toString(10);
@@ -166,8 +170,10 @@ export default class MainMenu extends RE.Component {
 
     document.body.appendChild(ui);
 
-    this.setBladeColor(colorSelect);
-    this.setNumberOfDrones(numberOfDronesSelect);
+    setTimeout(() => {
+      this.setBladeColor(colorSelect);
+      this.setNumberOfDrones(numberOfDronesSelect);
+    });
   }
 
   setBladeColor(colorSelect: HTMLSelectElement): void {
@@ -181,8 +187,12 @@ export default class MainMenu extends RE.Component {
   }
 
   setNumberOfDrones(numberOfDronesSelect: HTMLSelectElement): void {
-    // const numberOfDrones = parseInt(numberOfDronesSelect.value);
-    window.localStorage.setItem(LOCAL_STORAGE_KEY_NUMBER_OF_DRONES, numberOfDronesSelect.value);
+    const numberOfDrones = numberOfDronesSelect.value;
+
+    const remotesController = getComponent(RemotesController, this.remotesController) as RemotesController;
+    remotesController.setNumberOfDrones(parseInt(numberOfDrones));
+
+    window.localStorage.setItem(LOCAL_STORAGE_KEY_NUMBER_OF_DRONES, numberOfDrones);
   }
 }
 
