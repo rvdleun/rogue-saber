@@ -24,6 +24,11 @@ export default class MainMenu extends RE.Component {
   private inputColor: HTMLInputElement;
 
   awake() {
+    Runtime.renderFunc = () => {
+      Runtime.defaultRenderFunc();
+      Runtime.renderer.render( Runtime.scene, Runtime.camera )
+    };
+
     const ui = document.createElement('div');
     ui.style.backgroundColor = 'rgba(0,0,0,.7)';
     ui.style.color = 'white';
