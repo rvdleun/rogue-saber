@@ -1,10 +1,9 @@
 import * as RE from 'rogue-engine';
-import { Prop } from 'rogue-engine';
+import { Prop, Runtime } from 'rogue-engine';
 import { Camera, Euler, MathUtils, Object3D, Quaternion, Vector3 } from 'three';
 
 let direction = 0;
-const quaternionCamera = new Quaternion();
-const quaternionTarget = new Quaternion();
+const position = new Vector3();
 export default class EnemyIndicator extends RE.Component {
   public static global: EnemyIndicator;
 
@@ -15,34 +14,41 @@ export default class EnemyIndicator extends RE.Component {
   public rightIndicator: Object3D;
 
   @Prop("Object3D")
-  public target: Object3D;
+  public target: Object3D | null | undefined;
 
   private camera: Camera;
 
   awake() {
     this.camera = this.object3d.parent as Camera;
     EnemyIndicator.global = this;
+
+    console.log(this.target);
+    this.setTarget(this.target);
   }
 
-  beforeUpdate() {
+  update() {
     if (!this.target) {
       return;
     }
 
-    const camera = this.camera.getWorldQuaternion(quaternionCamera);
-    const target = this.target.getWorldQuaternion(quaternionTarget);
-
-    const diff = camera.y - camera.slerp(target, .1).y;
-    if (diff > 0.0275) {
-      direction = 1;
-    } else if (diff < -0.0275) {
+    const vector = this.target.getWorldPosition(position).project(this.camera);
+    console.log(vector.x, vector.z);
+    if ((vector.z < 1 && vector.x < -0.25) || (vector.z > 1 && vector.x > 0)) {
       direction = -1;
+    } else if ((vector.z < 1 && vector.x > 0.25) || (vector.z > 1 && vector.x <= 0)) {
+      direction = 1;
     } else {
       direction = 0;
     }
 
     this.leftIndicator.visible = direction === -1;
     this.rightIndicator.visible = direction === 1;
+  }
+
+  public setTarget(target: Object3D | null | undefined) {
+    this.target = target;
+    this.leftIndicator.visible = !!target;
+    this.rightIndicator.visible = !!target;
   }
 }
 

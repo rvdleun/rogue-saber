@@ -24,11 +24,6 @@ export default class MainMenu extends RE.Component {
   private inputColor: HTMLInputElement;
 
   awake() {
-    Runtime.renderFunc = () => {
-      Runtime.defaultRenderFunc();
-      Runtime.renderer.render( Runtime.scene, Runtime.camera )
-    };
-
     const ui = document.createElement('div');
     ui.style.backgroundColor = 'rgba(0,0,0,.7)';
     ui.style.color = 'white';
@@ -136,7 +131,7 @@ export default class MainMenu extends RE.Component {
     numberOfDronesSelect.addEventListener('focus', () => numberOfDronesSelect.style.outline = 'none');
     numberOfDronesDiv.appendChild(numberOfDronesSelect);
 
-    [1,2,3,4].forEach(numberOfDrones => {
+    [1,2,3].forEach(numberOfDrones => {
       const option = document.createElement('option');
       option.setAttribute('value', numberOfDrones.toString(10));
       option.innerHTML = numberOfDrones.toString(10);

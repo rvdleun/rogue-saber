@@ -3,6 +3,7 @@ import RemoteFire from './RemoteFire.re';
 import { getComponent, Prop, PropList, Runtime } from 'rogue-engine';
 import LightsaberBlade from './LightsaberBlade.re';
 import { Object3D } from 'three';
+import EnemyIndicator from './EnemyIndicator.re';
 
 export default class RemotesController extends RE.Component {
   @Prop('Boolean')
@@ -40,6 +41,7 @@ export default class RemotesController extends RE.Component {
 
     const id = Math.floor(Math.random() * this.numberOfDrones);
     this.nextFire = this.remoteFires[id].startFiring() + .5 + (Math.random() * (3.5 - this.numberOfDrones));
+    EnemyIndicator.global.setTarget(this.remoteFires[id]?.object3d?.parent?.parent?.children[0])
 
     this.i++;
     if (this.i >= this.remotes.length) {

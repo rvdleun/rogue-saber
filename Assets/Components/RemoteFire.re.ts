@@ -1,6 +1,7 @@
 import * as RE from 'rogue-engine';
 import { Prefab, Prop, Runtime } from 'rogue-engine';
 import { Mesh, MeshPhysicalMaterial, PositionalAudio, Vector3 } from 'three';
+import EnemyIndicator from './EnemyIndicator.re';
 
 const vector = new Vector3();
 export default class RemoteFire extends RE.Component {
@@ -25,7 +26,7 @@ export default class RemoteFire extends RE.Component {
   private fireSounds: PositionalAudio[] = [];
 
   start() {
-    this.chargeSound.setPlaybackRate(1.2);
+    this.chargeSound.setPlaybackRate(1);
 
     for(let i = 0; i < 10; i++) {
       const audio = new PositionalAudio(this.fireSound.listener);
@@ -74,6 +75,10 @@ export default class RemoteFire extends RE.Component {
     this.charging = false;
     this.firing = this.nextFires.length > 0;
     this.nextFire = this.nextFires.shift() as number;
+
+    if (!this.nextFire) {
+      EnemyIndicator.global.setTarget(null)
+    }
   }
 
   startFiring(): number {
@@ -86,7 +91,7 @@ export default class RemoteFire extends RE.Component {
     this.chargeSound.play();
     this.charging = true;
     this.firing = true;
-    this.nextFire = 1.5;
+    this.nextFire = 1.75;
 
     vector.x += -.25 + (Math.random() * .5);
     vector.y += -.3 + (Math.random() * .3);
