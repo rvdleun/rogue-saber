@@ -1,6 +1,8 @@
 import * as RE from 'rogue-engine';
 import { Prefab, Prop, Runtime } from 'rogue-engine';
 import { MathUtils, Object3D, Raycaster, Vector3 } from 'three';
+import DamageTracker from './DamageTracker.re';
+import DamageIndicator from './DamageIndicator.re';
 
 const direction = new Vector3();
 const origin = new Vector3();
@@ -54,9 +56,13 @@ export default class Laser extends RE.Component {
     origin.copy(this.object3d.position);
     this.raycaster.set(origin, direction);
 
-    const collides = this.raycaster.intersectObject(Laser.bladeCollider, true).length > 0;
+    if(this.raycaster.intersectObject(DamageTracker.collider, true).length > 0) {
+      DamageIndicator.global.onDamage();
+      this.timeToLive = 0;
+      return;
+    }
 
-    if(collides) {
+    if(this.raycaster.intersectObject(Laser.bladeCollider, true).length > 0) {
       this.reflected = true;
 
       const deflection = this.laserDeflectPrefab.instantiate();
