@@ -23,7 +23,6 @@ export default class EnemyIndicator extends RE.Component {
     this.camera = this.object3d.parent as Camera;
     EnemyIndicator.global = this;
 
-    console.log(this.target);
     this.setTarget(this.target);
   }
 
@@ -33,7 +32,8 @@ export default class EnemyIndicator extends RE.Component {
     }
 
     const vector = this.target.getWorldPosition(position).project(this.camera);
-    const threshold = this.spotted ? 0.25 : 0.01;
+    const threshold = this.spotted ? 0.5 : 0.25;
+    console.log(threshold);
     if ((vector.z < 1 && vector.x < -threshold) || (vector.z > 1 && vector.x > 0)) {
       direction = -1;
     } else if ((vector.z < 1 && vector.x > threshold) || (vector.z > 1 && vector.x <= 0)) {
