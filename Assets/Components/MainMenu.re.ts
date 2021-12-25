@@ -131,7 +131,7 @@ export default class MainMenu extends RE.Component {
     numberOfDronesSelect.addEventListener('focus', () => numberOfDronesSelect.style.outline = 'none');
     numberOfDronesDiv.appendChild(numberOfDronesSelect);
 
-    [1,2,3].forEach(numberOfDrones => {
+    [1,2,3,4].forEach(numberOfDrones => {
       const option = document.createElement('option');
       option.setAttribute('value', numberOfDrones.toString(10));
       option.innerHTML = numberOfDrones.toString(10);
@@ -145,7 +145,9 @@ export default class MainMenu extends RE.Component {
 
     renderer.xr.enabled = true;
     const button = VRButton.createButton( renderer );
+
     setTimeout(() => {
+      let hovering = false;
       button.style.backgroundColor = 'rgba(50, 255, 50, .1)';
       button.style.border = 'solid 3px white';
       button.style.borderRadius = '30px';
@@ -159,10 +161,12 @@ export default class MainMenu extends RE.Component {
       button.style.height = '70px';
       button.style.width = '750px';
       button.style.transition = '2s background-color';
+      button.onmouseenter = function () { hovering = true };
+      button.onmouseleave = function () { hovering = false };
 
       let alpha = true;
       setInterval(() => {
-        button.style.backgroundColor = `rgba(128, 255, 128, ${alpha ? .2 : .1})`;
+        button.style.backgroundColor = `rgba(128, 255, 128, ${alpha || hovering ? .2 : .1})`;
         alpha = !alpha;
       }, 2000);
     });

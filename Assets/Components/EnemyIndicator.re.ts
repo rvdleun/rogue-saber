@@ -1,6 +1,6 @@
 import * as RE from 'rogue-engine';
-import { Prop, Runtime } from 'rogue-engine';
-import { Camera, Euler, MathUtils, Object3D, Quaternion, Vector3 } from 'three';
+import { Prop } from 'rogue-engine';
+import { Camera, Object3D, Vector3 } from 'three';
 
 let direction = 0;
 const position = new Vector3();
@@ -33,7 +33,6 @@ export default class EnemyIndicator extends RE.Component {
 
     const vector = this.target.getWorldPosition(position).project(this.camera);
     const threshold = this.spotted ? 0.5 : 0.25;
-    console.log(threshold);
     if ((vector.z < 1 && vector.x < -threshold) || (vector.z > 1 && vector.x > 0)) {
       direction = -1;
     } else if ((vector.z < 1 && vector.x > threshold) || (vector.z > 1 && vector.x <= 0)) {
