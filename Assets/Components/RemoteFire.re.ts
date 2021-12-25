@@ -36,6 +36,7 @@ export default class RemoteFire extends RE.Component {
       this.object3d.add(audio);
     }
 
+    const multiply = new Vector3(1.5, 1.5, 1.5);
     this.object3d.parent?.traverse((child: Mesh) => {
       if (!child.isMesh) {
         return;
@@ -43,6 +44,10 @@ export default class RemoteFire extends RE.Component {
 
       const material = child.material as MeshPhysicalMaterial;
       if (material.color.r > .5 && material.color.g < .5 && material.color.b < .5) {
+        if (child.name === 'mesh1273343276_1') {
+          child.scale.multiply(multiply);
+        }
+
         if (!this.remoteMaterial) {
           this.remoteMaterial = material.clone();
           this.remoteMaterial.color.setRGB(1, 1, 1);

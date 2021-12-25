@@ -17,6 +17,7 @@ export default class EnemyIndicator extends RE.Component {
   public target: Object3D | null | undefined;
 
   private camera: Camera;
+  private spotted = false;
 
   awake() {
     this.camera = this.object3d.parent as Camera;
@@ -32,14 +33,16 @@ export default class EnemyIndicator extends RE.Component {
     }
 
     const vector = this.target.getWorldPosition(position).project(this.camera);
-    console.log(vector.x, vector.z);
-    if ((vector.z < 1 && vector.x < -0.25) || (vector.z > 1 && vector.x > 0)) {
+    const threshold = this.spotted ? 0.25 : 0.01;
+    if ((vector.z < 1 && vector.x < -threshold) || (vector.z > 1 && vector.x > 0)) {
       direction = -1;
-    } else if ((vector.z < 1 && vector.x > 0.25) || (vector.z > 1 && vector.x <= 0)) {
+    } else if ((vector.z < 1 && vector.x > threshold) || (vector.z > 1 && vector.x <= 0)) {
       direction = 1;
     } else {
       direction = 0;
     }
+
+    this.spotted = this.spotted || direction !== 0;
 
     this.leftIndicator.visible = direction === -1;
     this.rightIndicator.visible = direction === 1;
@@ -49,6 +52,7 @@ export default class EnemyIndicator extends RE.Component {
     this.target = target;
     this.leftIndicator.visible = !!target;
     this.rightIndicator.visible = !!target;
+    this.spotted = false;
   }
 }
 

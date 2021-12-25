@@ -16,9 +16,10 @@ Learning Rogue Engine with lightsabers
   * VirtualRealityController: Syncs position and rotation with a XR controller
     * TODO: Only seems to work for the left controller.
 
-# Models
+# Assets
 * bot drone by Dave404 [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/2iyQx2YscRq)
 * Empty Island by Cheryl Fong [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/f-xl-C5VBuo)
 * Luke's Lightsaber by Beren Kusmenoglu [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/36AnCHRQmia)
 * Lightsaber sounds taken from theforce.net (https://www.theforce.net/fanfilms/postproduction/soundfx/saberfx_fergo.asp)
 * Remote Firing sound taken from freesound.org (https://freesound.org/people/Robinhood76/sounds/414293/)
+* Double Arrow icon from Google Fonts (https://fonts.google.com/icons)
