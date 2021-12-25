@@ -16,7 +16,7 @@ export default class LightsaberGlow extends RE.Component {
       this.flickerDirection *= -1;
     }
 
-    const flicker = this.flicker * .15;
+    const flicker = this.flicker * .05;
 
     const bladeGlow = this.object3d as Mesh;
     const material = bladeGlow.material as MeshStandardMaterial;

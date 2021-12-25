@@ -1,6 +1,6 @@
 import * as RE from 'rogue-engine';
 import { getComponent, Prop, Runtime } from 'rogue-engine';
-import { Color, Object3D } from 'three';
+import { Color, Mesh, MeshStandardMaterial, Object3D } from 'three';
 import LightsaberGlow from './LightsaberGlow.re';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import RemotesController from './RemotesController.re';
@@ -79,11 +79,11 @@ export default class MainMenu extends RE.Component {
     colorDiv.appendChild(colorSelect);
 
     [
-      { value: '#2ECC71', text: 'Green' },
-      { value: '#5DADE2', text: 'Blue' },
-      { value: '#AF7AC5', text: 'Purple' },
-      { value: '#E74C3C', text: 'Red' },
-      { value: '#EB984E', text: 'Orange' },
+      { value: '#00FF00', text: 'Green' },
+      { value: '#00FFFF', text: 'Blue' },
+      { value: '#FF00FF', text: 'Purple' },
+      { value: '#FF0000', text: 'Red' },
+      { value: '#FF8C00', text: 'Orange' },
       { value: '#F7DC6F', text: 'Yellow' },
       { value: '#FDFEFE', text: 'White' },
     ].forEach(({value, text}) => {
