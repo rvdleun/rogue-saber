@@ -3,7 +3,7 @@ import { PositionalAudio } from 'three';
 import { AudioAsset, Prop, Runtime } from 'rogue-engine';
 
 const assets = ['lasrhit1.wav', 'lasrhit2.WAV', 'lasrhit3.WAV', 'lasrhit4.WAV'].map(async audio => {
-  return AudioAsset.fromFile(`/Assets/Audio/sabersounds/${audio}`)
+  return AudioAsset.fromFile(RE.getStaticPath(`Audio/${audio}`))
 });
 
 export default class LaserDeflect extends RE.Component {

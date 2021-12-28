@@ -51,7 +51,8 @@ export default class MainMenu extends RE.Component {
     logo.style.display = 'block';
     logo.style.marginLeft = 'auto';
     logo.style.marginRight = 'auto';
-    logo.style.paddingBottom = '50px';
+    logo.style.paddingTop = '10px';
+    logo.style.paddingBottom = '5px';
     ui.appendChild(logo);
 
     const colorDiv = document.createElement('div');
