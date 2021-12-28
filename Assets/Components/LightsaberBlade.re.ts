@@ -1,8 +1,12 @@
 import * as RE from 'rogue-engine';
-import { Runtime } from 'rogue-engine';
+import { Prop, Runtime } from 'rogue-engine';
+import { PointLight } from 'three';
 
 export default class LightsaberBlade extends RE.Component {
   public static active: boolean = false;
+
+  @Prop("Object3D")
+  public light: PointLight;
 
   private length: number;
   private maxLength: number;
@@ -28,6 +32,7 @@ export default class LightsaberBlade extends RE.Component {
     }
 
     this.length = Math.min(1, Math.max(0, length + Runtime.deltaTime * (active ? 2 : -.7)));
+    this.light.intensity = this.length * .25;
     this.object3d.position.y = maxPosition * this.length;
     this.object3d.scale.y = maxLength * this.length;
   }

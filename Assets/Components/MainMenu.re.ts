@@ -1,6 +1,6 @@
 import * as RE from 'rogue-engine';
 import { getComponent, Prop, Runtime } from 'rogue-engine';
-import { Color, Mesh, MeshStandardMaterial, Object3D } from 'three';
+import { Color, Mesh, MeshStandardMaterial, Object3D, PointLight } from 'three';
 import LightsaberGlow from './LightsaberGlow.re';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import RemotesController from './RemotesController.re';
@@ -8,6 +8,9 @@ import RemotesController from './RemotesController.re';
 const LOCAL_STORAGE_KEY_BLADE_COLOR = 'rogue-saber.blade-color';
 const LOCAL_STORAGE_KEY_NUMBER_OF_DRONES = 'rogue-saber.number-of-drones';
 
+/**
+ * Note: Do NOT create a Main Menu like this. Rather, follow the instructions from this video: https://www.youtube.com/watch?v=jAo1yGRBJiM
+ */
 export default class MainMenu extends RE.Component {
   @Prop("Object3D")
   private bladeGlow: Object3D;
@@ -15,13 +18,20 @@ export default class MainMenu extends RE.Component {
   @Prop("Color")
   private bladeDefaultColor: Color;
 
+  @Prop("Object3D")
+  private bladeLight: PointLight;
+
   @Prop("Number")
   private defaultNumberOfDrones = 1;
+
+  @Prop("Object3D")
+  private instructions: Object3D;
 
   @Prop("Object3D")
   private remotesController: Object3D;
 
   private inputColor: HTMLInputElement;
+  private showInstructions = true;
 
   awake() {
     const ui = document.createElement('div');
@@ -83,8 +93,7 @@ export default class MainMenu extends RE.Component {
       { value: '#00FFFF', text: 'Blue' },
       { value: '#FF00FF', text: 'Purple' },
       { value: '#FF0000', text: 'Red' },
-      { value: '#FF8C00', text: 'Orange' },
-      { value: '#F7DC6F', text: 'Yellow' },
+      { value: '#FFFF00', text: 'Yellow' },
       { value: '#FDFEFE', text: 'White' },
     ].forEach(({value, text}) => {
       const option = document.createElement('option');
@@ -164,6 +173,15 @@ export default class MainMenu extends RE.Component {
       button.onmouseenter = function () { hovering = true };
       button.onmouseleave = function () { hovering = false };
 
+      button.addEventListener('click', () => {
+        if (!this.showInstructions) {
+          return;
+        }
+
+        this.instructions.visible = true;
+        this.showInstructions = false;
+      });
+
       let alpha = true;
       setInterval(() => {
         button.style.backgroundColor = `rgba(128, 255, 128, ${alpha || hovering ? .2 : .1})`;
@@ -181,13 +199,15 @@ export default class MainMenu extends RE.Component {
   }
 
   setBladeColor(colorSelect: HTMLSelectElement): void {
-    const color = colorSelect.value;
-    colorSelect.style.color = color;
+    const { value } = colorSelect;
+    colorSelect.style.color = value;
 
+    const color = new Color(value);
     const bladeGlow = getComponent(LightsaberGlow, this.bladeGlow) as LightsaberGlow;
-    bladeGlow.color = new Color(color);
+    bladeGlow.color = color;
+    this.bladeLight.color = color;
 
-    window.localStorage.setItem(LOCAL_STORAGE_KEY_BLADE_COLOR, color);
+    window.localStorage.setItem(LOCAL_STORAGE_KEY_BLADE_COLOR, value);
   }
 
   setNumberOfDrones(numberOfDronesSelect: HTMLSelectElement): void {

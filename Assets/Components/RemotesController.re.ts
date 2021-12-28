@@ -26,6 +26,8 @@ export default class RemotesController extends RE.Component {
         }
       });
     });
+
+    console.log(this.toJSON());
   }
 
   update() {
@@ -40,7 +42,7 @@ export default class RemotesController extends RE.Component {
     }
 
     const id = Math.floor(Math.random() * this.numberOfDrones);
-    this.nextFire = this.remoteFires[id].startFiring() + .5 + (Math.random() * (3.5 - this.numberOfDrones));
+    this.nextFire = this.remoteFires[id].startFiring() + .5 + (Math.random() * (2.5 - (this.numberOfDrones * 0.5)));
     EnemyIndicator.global.setTarget(this.remoteFires[id]?.object3d?.parent?.parent?.children[0])
 
     this.i++;

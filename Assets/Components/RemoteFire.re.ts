@@ -2,6 +2,7 @@ import * as RE from 'rogue-engine';
 import { Prefab, Prop, Runtime } from 'rogue-engine';
 import { Mesh, MeshPhysicalMaterial, PositionalAudio, Vector3 } from 'three';
 import EnemyIndicator from './EnemyIndicator.re';
+import LightsaberBlade from './LightsaberBlade.re';
 
 const vector = new Vector3();
 export default class RemoteFire extends RE.Component {
@@ -76,7 +77,10 @@ export default class RemoteFire extends RE.Component {
       this.remoteMaterial.color.setRGB(1, 1, 1);
     }
 
-    this.fire();
+    if (LightsaberBlade.active) {
+      this.fire();
+    }
+
     this.charging = false;
     this.firing = this.nextFires.length > 0;
     this.nextFire = this.nextFires.shift() as number;
