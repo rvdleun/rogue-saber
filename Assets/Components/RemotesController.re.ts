@@ -15,6 +15,7 @@ export default class RemotesController extends RE.Component {
   private remotes: Object3D[];
 
   private i = 0;
+  private previousId = -1;
 
   start() {
     this.remotes = this.object3d.children;
@@ -26,8 +27,6 @@ export default class RemotesController extends RE.Component {
         }
       });
     });
-
-    console.log(this.toJSON());
   }
 
   update() {
@@ -41,8 +40,13 @@ export default class RemotesController extends RE.Component {
       return;
     }
 
-    const id = Math.floor(Math.random() * this.numberOfDrones);
+    let id = this.getRandomDrone();
+    if (id === this.previousId) {
+      id = this.getRandomDrone();
+    }
+
     this.nextFire = this.remoteFires[id].startFiring() + .5 + (Math.random() * (2.5 - (this.numberOfDrones * 0.5)));
+    this.previousId = id;
     EnemyIndicator.global.setTarget(this.remoteFires[id]?.object3d?.parent?.parent?.children[0])
 
     this.i++;
@@ -56,6 +60,10 @@ export default class RemotesController extends RE.Component {
     for(let i = 0; i < this.remotes.length; i++) {
       this.remotes[i].visible = i < numberOfDrones;
     }
+  }
+
+  getRandomDrone(): number {
+    return Math.floor(Math.random() * this.numberOfDrones);
   }
 }
 
