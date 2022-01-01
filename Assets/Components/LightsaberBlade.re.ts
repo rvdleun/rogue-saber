@@ -21,6 +21,16 @@ export default class LightsaberBlade extends RE.Component {
     this.object3d.position.y = 0;
   }
 
+  start() {
+    Runtime.renderer.xr.addEventListener( 'sessionend', () => {
+      if (!LightsaberBlade.active) {
+        return;
+      }
+
+      this.toggle();
+    });
+  }
+
   update() {
     const { active } = LightsaberBlade;
     const { length, maxLength, maxPosition } = this;
