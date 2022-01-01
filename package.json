@@ -11,11 +11,12 @@
   "license": "ISC",
   "dependencies": {
     "@types/three": "0.134.0",
+    "@webxr-input-profiles/motion-controllers": "^1.0.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "glob": "^7.1.6",
-    "three": "0.134.0",
-    "mkcert": "^1.4.0"
+    "mkcert": "^1.4.0",
+    "three": "0.134.0"
   },
   "devDependencies": {
     "cross-env": "^5.2.1",

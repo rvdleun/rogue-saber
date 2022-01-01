@@ -16,8 +16,8 @@ export default class Lightsaber extends RE.Component {
   private instructions: Object3D;
 
   start() {
-    const vrController = getComponent(VirtualRealityController, this.controller)
-    vrController?.addEventListener("selectstart", () => this.onSelectStart());
+    // const vrController = getComponent(VirtualRealityController, this.controller)
+    // vrController?.addEventListener("selectstart", () => this.onSelectStart());
   }
 
   onSelectStart() {
