@@ -15,6 +15,7 @@ export default class XRInputSource extends RE.Component {
   private showControllerModel: boolean = true;
 
   private controller: Group;
+  private events: { event: string, func: Function }[] = [];
   private grip: Group;
   private handedness: 'left' | 'right';
 
@@ -27,10 +28,6 @@ export default class XRInputSource extends RE.Component {
       this.detectController();
       return;
     }
-
-    const { position, rotation } = this.grip;
-    this.object3d.position.copy(position);
-    this.object3d.rotation.copy(rotation);
   }
 
   async detectController() {
@@ -46,8 +43,6 @@ export default class XRInputSource extends RE.Component {
       return;
     }
 
-    console.log(inputSources);
-
     let controllerId: number = -1;
     for (let id in inputSources) {
       if (inputSources[id].handedness === this.handedness) {
@@ -62,6 +57,10 @@ export default class XRInputSource extends RE.Component {
     const xrInputSource = inputSources[controllerId];
     this.controller = renderer.xr.getController(controllerId);
     this.grip = renderer.xr.getControllerGrip(controllerId);
+    this.object3d.parent?.add(this.grip);
+    this.grip.add(this.object3d);
+
+    this.events.forEach(({ event, func }) => this.addEventListener(event, func));
 
     if (!this.showControllerModel) {
       return;
@@ -83,7 +82,13 @@ export default class XRInputSource extends RE.Component {
     );
   }
 
-  addEventListener(event, func) {
+  addEventListener(event: string, func) {
+    if (!this.controller) {
+      this.events.push({ event, func });
+      return;
+    }
+
+    console.log(event, func);
     this.controller.addEventListener(event, func);
   }
 }
