@@ -44,6 +44,10 @@ export default class RemoteMovement extends RE.Component {
       this.nextRotation = 1 + Math.random() * 2;
     }
 
+    if (!this.model) {
+      return;
+    }
+
     Runtime.camera.getWorldPosition(vector);
     this.model.lookAt(vector);
   }

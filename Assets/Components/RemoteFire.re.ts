@@ -44,6 +44,10 @@ export default class RemoteFire extends RE.Component {
       }
 
       const material = child.material as MeshPhysicalMaterial;
+      if (!material.color) {
+        return;
+      }
+
       if (material.color.r > .5 && material.color.g < .5 && material.color.b < .5) {
         if (child.name === 'mesh1273343276_1') {
           child.scale.multiply(multiply);
