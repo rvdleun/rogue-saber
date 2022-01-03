@@ -22,7 +22,7 @@ export default class Lightsaber extends RE.Component {
   @Prop("Object3D")
   private instructions: Object3D;
 
-  private activeHand: Object3D;
+  public static activeHand: Object3D;
   private hands: Object3D[];
 
   start() {
@@ -38,7 +38,7 @@ export default class Lightsaber extends RE.Component {
   }
 
   onSelectStart(hand) {
-    if (this.activeHand === hand) {
+    if (Lightsaber.activeHand === hand) {
       this.toggleLightsaber();
     } else if (!LightsaberBlade.active) {
       this.setActiveHand(hand);
@@ -46,9 +46,9 @@ export default class Lightsaber extends RE.Component {
   }
 
   setActiveHand(activeHand) {
-    this.activeHand = activeHand;
+    Lightsaber.activeHand = activeHand;
     this.hands.forEach(hand => hand.children[0].visible = activeHand !== hand);
-    this.activeHand.add(this.object3d.parent as Object3D);
+    Lightsaber.activeHand.add(this.object3d.parent as Object3D);
   }
 
   toggleLightsaber() {
