@@ -10,7 +10,6 @@ export default class VirtualRealityController extends RE.Component {
     const { renderer } = Runtime;
     renderer.xr.getController(this.controllerId);
     renderer.xr.getControllerGrip(this.controllerId);
-    console.log('!!!!');
   }
 }
 

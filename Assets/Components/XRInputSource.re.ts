@@ -88,7 +88,6 @@ export default class XRInputSource extends RE.Component {
       return;
     }
 
-    console.log(event, func);
     this.controller.addEventListener(event, func);
   }
 }

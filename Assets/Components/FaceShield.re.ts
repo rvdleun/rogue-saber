@@ -25,7 +25,6 @@ export default class FaceShield extends RE.Component {
   update() {
     this.object3d.position.y =Math.min(1, Math.max(0, this.object3d.position.y + (Runtime.deltaTime * (this.active ? -1 : 1))));
     ForceLook.active = this.object3d.position.y === 0;
-    console.log(this.object3d.position.y);
 
     this.hands.forEach(hand => {
       if (hand === Lightsaber.activeHand || !Runtime.renderer.xr.getSession()) {
@@ -45,7 +44,6 @@ export default class FaceShield extends RE.Component {
       if (this.interacting < 0) {
         this.active = !this.active;
         this.toggled = true;
-        console.log('Click');
       }
     });
   }
