@@ -1,4 +1,4 @@
-import { Object3D, Material, Texture } from 'three';
+import { Object3D, Material, Texture, AnimationClip } from 'three';
 import { AudioAsset } from '../Model/AudioAsset';
 declare type AssetConfig = {
     preload?: boolean;
@@ -11,7 +11,7 @@ declare class AssetManagerClass {
     private _assetPaths;
     private _loadingAssets;
     get assets(): {
-        [uuid: string]: Object3D<import("three").Event> | Texture | Material | AudioAsset;
+        [uuid: string]: Object3D<import("three").Event> | Texture | Material | AnimationClip | AudioAsset;
     };
     get assetConfigs(): {
         [uuid: string]: AssetConfig;
@@ -19,13 +19,13 @@ declare class AssetManagerClass {
     get assetPaths(): {
         [uuid: string]: string;
     };
-    onRegisterAsset(callback: (asset: Object3D | AudioAsset | Material | Texture) => void): {
+    onRegisterAsset(callback: (asset: Object3D | AudioAsset | Material | Texture | AnimationClip) => void): {
         stop: () => void;
     };
-    onRemoveAsset(callback: (asset: Object3D | AudioAsset | Material | Texture) => void): {
+    onRemoveAsset(callback: (asset: Object3D | AudioAsset | Material | Texture | AnimationClip) => void): {
         stop: () => void;
     };
-    onClearAssets(callback: (asset: Object3D | AudioAsset | Material | Texture) => void): {
+    onClearAssets(callback: (asset: Object3D | AudioAsset | Material | Texture | AnimationClip) => void): {
         stop: () => void;
     };
     onSetAssetConfig(callback: (uuid: string, config: AssetConfig) => void): {
@@ -61,15 +61,17 @@ declare class AssetManagerClass {
         [uuid: string]: string;
     }): void;
     getAssetPath(uuid: string): string | undefined;
-    registerAsset(asset: Object3D | AudioAsset | Material | Texture): void;
-    loadAsset(uuid: string): Promise<Object3D<import("three").Event> | Texture | Material | AudioAsset | undefined>;
+    registerAsset(asset: Object3D | AudioAsset | Material | Texture | AnimationClip): void;
+    loadAsset(uuid: string): Promise<Object3D<import("three").Event> | Texture | Material | AnimationClip | AudioAsset | undefined>;
     private getExtension;
-    getAsset(uuid: string): Object3D<import("three").Event> | Texture | Material | AudioAsset;
+    getAsset(uuid: string): Object3D<import("three").Event> | Texture | Material | AnimationClip | AudioAsset;
     private loadObject;
     private loadObjectFunction;
     private loadNestedPrefabs;
     private loadAudio;
     private loadAudioFunction;
+    private loadAnimation;
+    private loadAnimationFunction;
     private loadMaterial;
     private loadMaterialFunction;
     private loadTexture;

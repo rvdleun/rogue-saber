@@ -15,4 +15,4 @@ export { Runtime, RuntimeController } from './Engine/Controller/RuntimeControlle
 export { Debug, Log, Error, Warning } from './Engine/Controller/Debug';
 export { onObjectAdded, onComponentAdded, onComponentLoaded, onComponentRemoved, onObjectRemoved, onBeforeUpdate, onUpdate, onAfterUpdate, onNextFrame, } from './Engine/Controller/Events';
 export { isDev, getStaticPath, dispose } from './Engine/Controller/Functions';
-export { Prop, PropList } from './Engine/Controller/Decorators';
+export { Prop, PropList, props } from './Engine/Controller/Decorators';

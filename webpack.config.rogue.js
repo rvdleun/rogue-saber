@@ -110,6 +110,9 @@ module.exports = {
     disableHostCheck: true,
     clientLogLevel: "warning"
   },
+  watchOptions: {
+    aggregateTimeout: 200
+  },
   performance: {
     hints: false
   },

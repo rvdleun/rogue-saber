@@ -11,6 +11,8 @@ const path = require("path");
 const rogueConfig = require("./rogue-config.json");
 const useHttps = rogueConfig.useHttps;
 
+let refreshCount = 0;
+
 (async () => {
 
 if (useHttps) {
@@ -95,6 +97,15 @@ router.get("/getScenePlayerConfig", (req, res, next) => {
   };
 
   process.send("getScenePlayerConfig");
+});
+
+router.post("/addRefreshCount", (req, res, next) => {
+  refreshCount += 1;
+  res.send("Ok");
+});
+
+router.get("/getRefreshCount", (req, res, next) => {
+  res.send(refreshCount.toString());
 });
 
 router.get("*", (req, res, next) => {

@@ -35,6 +35,14 @@
     init();
 
     async function init() {
+      const refreshCount = await (await fetch("/getRefreshCount")).json();
+
+      window.onfocus = async () => {
+        const curRefreshCount = await (await fetch("/getRefreshCount")).json();
+
+        if (curRefreshCount !== refreshCount) window.location.reload();
+      };
+
       window['ROGUE_ISDEV'] = true;
 
       const RE = window["rogue-engine"];
