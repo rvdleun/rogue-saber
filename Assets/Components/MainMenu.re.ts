@@ -7,6 +7,7 @@ import RemotesController from './RemotesController.re';
 
 const LOCAL_STORAGE_KEY_BLADE_COLOR = 'rogue-saber.blade-color';
 const LOCAL_STORAGE_KEY_NUMBER_OF_DRONES = 'rogue-saber.number-of-drones';
+const LOCAL_STORAGE_KEY_SESSION_DURATION = 'rogue-saber.session-duration';
 
 /**
  * Note: Do NOT create a Main Menu like this. Rather, follow the instructions from this video: https://www.youtube.com/watch?v=jAo1yGRBJiM
@@ -24,13 +25,15 @@ export default class MainMenu extends RE.Component {
   @Prop("Number")
   private defaultNumberOfDrones = 1;
 
+  @Prop("Number")
+  private defaultSessionDuration = 2.5;
+
   @Prop("Object3D")
   private instructions: Object3D;
 
   @Prop("Object3D")
   private remotesController: Object3D;
 
-  private inputColor: HTMLInputElement;
   private showInstructions = true;
 
   awake() {
@@ -55,6 +58,45 @@ export default class MainMenu extends RE.Component {
     logo.style.paddingBottom = '5px';
     ui.appendChild(logo);
 
+    ui.appendChild(this.createColorSelect());
+    ui.appendChild(this.createNumberOfDronesSelect());
+    ui.appendChild(this.createSessionDuration());
+    ui.appendChild(this.createStartGameButton());
+
+    const githubLink = document.createElement('div');
+    githubLink.innerHTML = '<a href="https://github.com/rvdleun/rogue-saber" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>';
+    ui.appendChild(githubLink);
+
+    document.body.appendChild(ui);
+  }
+
+  setBladeColor(colorSelect: HTMLSelectElement): void {
+    const { value } = colorSelect;
+    colorSelect.style.color = value;
+
+    const color = new Color(value);
+    const bladeGlow = getComponent(LightsaberGlow, this.bladeGlow) as LightsaberGlow;
+    bladeGlow.color = color;
+    this.bladeLight.color = color;
+
+    window.localStorage.setItem(LOCAL_STORAGE_KEY_BLADE_COLOR, value);
+  }
+
+  setNumberOfDrones(numberOfDronesSelect: HTMLSelectElement): void {
+    const numberOfDrones = numberOfDronesSelect.value;
+
+    const remotesController = getComponent(RemotesController, this.remotesController) as RemotesController;
+    remotesController.setNumberOfDrones(parseInt(numberOfDrones));
+
+    window.localStorage.setItem(LOCAL_STORAGE_KEY_NUMBER_OF_DRONES, numberOfDrones);
+  }
+
+  setSessionDuration(sessionDurationSelect: HTMLSelectElement): void {
+    const sessionDuration = sessionDurationSelect.value;
+    window.localStorage.setItem(LOCAL_STORAGE_KEY_SESSION_DURATION, sessionDuration);
+  }
+
+  private createColorSelect() {
     const colorDiv = document.createElement('div');
     colorDiv.style.display = 'block';
     colorDiv.style.marginLeft = 'auto';
@@ -64,7 +106,6 @@ export default class MainMenu extends RE.Component {
     colorDiv.style.width = '750px';
     colorDiv.style.border = 'solid 3px white';
     colorDiv.style.borderRadius = '30px';
-    ui.appendChild(colorDiv);
 
     const currentColor = window.localStorage.getItem(LOCAL_STORAGE_KEY_BLADE_COLOR) || `#${this.bladeDefaultColor.getHexString()}`;
     const colorLabel = document.createElement('label');
@@ -106,6 +147,14 @@ export default class MainMenu extends RE.Component {
       colorSelect.appendChild(option);
     });
 
+    setTimeout(() => {
+      this.setBladeColor(colorSelect);
+    });
+
+    return colorDiv;
+  }
+
+  private createNumberOfDronesSelect() {
     const numberOfDronesDiv = document.createElement('div');
     numberOfDronesDiv.style.display = 'block';
     numberOfDronesDiv.style.marginLeft = 'auto';
@@ -116,7 +165,6 @@ export default class MainMenu extends RE.Component {
     numberOfDronesDiv.style.width = '750px';
     numberOfDronesDiv.style.border = 'solid 3px white';
     numberOfDronesDiv.style.borderRadius = '30px';
-    ui.appendChild(numberOfDronesDiv);
 
     const currentNumberOfDrones = parseInt(window.localStorage.getItem(LOCAL_STORAGE_KEY_NUMBER_OF_DRONES) as string) || this.defaultNumberOfDrones;
     const numberOfDronesLabel = document.createElement('label');
@@ -151,9 +199,71 @@ export default class MainMenu extends RE.Component {
       numberOfDronesSelect.appendChild(option);
     });
 
+    setTimeout(() => {
+      this.setNumberOfDrones(numberOfDronesSelect);
+    });
+
+    return numberOfDronesDiv;
+  }
+
+  private createSessionDuration() {
+    const sessionDurationDiv = document.createElement('div');
+    sessionDurationDiv.style.display = 'block';
+    sessionDurationDiv.style.marginLeft = 'auto';
+    sessionDurationDiv.style.marginRight = 'auto';
+    sessionDurationDiv.style.marginTop = '25px';
+    sessionDurationDiv.style.padding = '15px 15px 5px 15px';
+    sessionDurationDiv.style.height = '50px';
+    sessionDurationDiv.style.width = '750px';
+    sessionDurationDiv.style.border = 'solid 3px white';
+    sessionDurationDiv.style.borderRadius = '30px';
+
+    const currentSessionDuration = parseFloat(window.localStorage.getItem(LOCAL_STORAGE_KEY_SESSION_DURATION) as string) || this.defaultSessionDuration;
+    const sessionDurationLabel = document.createElement('label');
+    sessionDurationLabel.innerHTML = 'Session duration:';
+    sessionDurationLabel.style.float = 'left';
+    sessionDurationLabel.style.marginLeft = '50px';
+    sessionDurationLabel.setAttribute('for', 'main-menu-session-duration');
+    sessionDurationDiv.appendChild(sessionDurationLabel);
+
+    const sessionDurationSelect = document.createElement('select');
+    sessionDurationSelect.setAttribute('id', 'main-menu-session-duration');
+    sessionDurationSelect.style.background = 'none';
+    sessionDurationSelect.style.border = 'none';
+    sessionDurationSelect.style.color = 'white';
+    sessionDurationSelect.style.fontFamily = 'sans-serif';
+    sessionDurationSelect.style.fontSize = '32px';
+    sessionDurationSelect.style.marginRight = '20px';
+    sessionDurationSelect.style.float = 'right';
+    sessionDurationSelect.style.height = '40px';
+    sessionDurationSelect.style.width = '150px';
+    sessionDurationSelect.addEventListener('change', () => this.setSessionDuration(sessionDurationSelect));
+    sessionDurationSelect.addEventListener('focus', () => sessionDurationSelect.style.outline = 'none');
+    sessionDurationDiv.appendChild(sessionDurationSelect);
+
+    [0,1,2.5,5].forEach(sessionDuration => {
+      const option = document.createElement('option');
+      option.setAttribute('value', sessionDuration.toString(10));
+      option.innerHTML = 0 ? 'Endless' : `${sessionDuration.toString(10)}min`;
+      console.log(currentSessionDuration, '===', sessionDuration, currentSessionDuration === sessionDuration);
+      if (currentSessionDuration === sessionDuration) {
+        option.setAttribute('selected', 'selected');
+      }
+      sessionDurationSelect.appendChild(option);
+    });
+
+    setTimeout(() => {
+      this.setSessionDuration(sessionDurationSelect);
+    });
+
+    return sessionDurationDiv;
+  }
+
+  private createStartGameButton() {
     const { renderer } = Runtime;
 
     renderer.xr.enabled = true;
+
     const button = VRButton.createButton( renderer );
 
     setTimeout(() => {
@@ -189,39 +299,8 @@ export default class MainMenu extends RE.Component {
         alpha = !alpha;
       }, 2000);
     });
-    ui.appendChild( button );
 
-    const githubLink = document.createElement('div');
-    githubLink.innerHTML = '<a href="https://github.com/rvdleun/rogue-saber" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>';
-    ui.appendChild(githubLink);
-
-    document.body.appendChild(ui);
-
-    setTimeout(() => {
-      this.setBladeColor(colorSelect);
-      this.setNumberOfDrones(numberOfDronesSelect);
-    });
-  }
-
-  setBladeColor(colorSelect: HTMLSelectElement): void {
-    const { value } = colorSelect;
-    colorSelect.style.color = value;
-
-    const color = new Color(value);
-    const bladeGlow = getComponent(LightsaberGlow, this.bladeGlow) as LightsaberGlow;
-    bladeGlow.color = color;
-    this.bladeLight.color = color;
-
-    window.localStorage.setItem(LOCAL_STORAGE_KEY_BLADE_COLOR, value);
-  }
-
-  setNumberOfDrones(numberOfDronesSelect: HTMLSelectElement): void {
-    const numberOfDrones = numberOfDronesSelect.value;
-
-    const remotesController = getComponent(RemotesController, this.remotesController) as RemotesController;
-    remotesController.setNumberOfDrones(parseInt(numberOfDrones));
-
-    window.localStorage.setItem(LOCAL_STORAGE_KEY_NUMBER_OF_DRONES, numberOfDrones);
+    return button;
   }
 }
 

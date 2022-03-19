@@ -1,17 +1,13 @@
 import * as RE from 'rogue-engine';
 import { getComponent, Prop, Runtime } from 'rogue-engine';
 import LightsaberBlade from './LightsaberBlade.re';
-import VirtualRealityController from './VirtualRealityController.re';
-import { Object3D, PointLight } from 'three';
+import { Object3D } from 'three';
 import LightsaberAudio from './LightsaberAudio.re';
 import XRInputSource from './XRInputSource.re';
 
 export default class Lightsaber extends RE.Component {
   @Prop("Object3D")
   private blade: Object3D;
-
-  @Prop("Object3D")
-  private controller: Object3D;
 
   @Prop("Object3D")
   public handLeft: Object3D;
