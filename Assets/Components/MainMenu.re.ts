@@ -7,6 +7,7 @@ import RemotesController from './RemotesController.re';
 import Session from './Session.re';
 
 const LOCAL_STORAGE_KEY_BLADE_COLOR = 'rogue-saber.blade-color';
+const LOCAL_STORAGE_KEY_HIGH_SCORE_PREFIX = 'rogue-saber.high-score-';
 const LOCAL_STORAGE_KEY_NUMBER_OF_DRONES = 'rogue-saber.number-of-drones';
 const LOCAL_STORAGE_KEY_SESSION_DURATION = 'rogue-saber.session-duration';
 
@@ -14,6 +15,8 @@ const LOCAL_STORAGE_KEY_SESSION_DURATION = 'rogue-saber.session-duration';
  * Note: Do NOT create a Main Menu like this. Rather, follow the instructions from this video: https://www.youtube.com/watch?v=jAo1yGRBJiM
  */
 export default class MainMenu extends RE.Component {
+  public static global: MainMenu;
+
   @Prop("Object3D")
   private bladeGlow: Object3D;
 
@@ -35,9 +38,12 @@ export default class MainMenu extends RE.Component {
   @Prop("Object3D")
   private remotesController: Object3D;
 
+  private highScoreTextElement: HTMLParagraphElement;
   private showInstructions = true;
 
   awake() {
+    MainMenu.global = this;
+
     const ui = document.createElement('div');
     ui.style.backgroundColor = 'rgba(0,0,0,.7)';
     ui.style.color = 'white';
@@ -50,6 +56,11 @@ export default class MainMenu extends RE.Component {
     ui.style.height = '100vh';
     ui.style.textAlign = 'center';
 
+    const container = document.createElement('div');
+    container.style.margin = 'auto';
+    container.style.width = '800px';
+    ui.appendChild(container);
+
     const logo = document.createElement('img');
     logo.setAttribute('src', RE.getStaticPath('logo.png'));
     logo.style.display = 'block';
@@ -57,18 +68,29 @@ export default class MainMenu extends RE.Component {
     logo.style.marginRight = 'auto';
     logo.style.paddingTop = '10px';
     logo.style.paddingBottom = '5px';
-    ui.appendChild(logo);
+    logo.style.width = '700px';
+    container.appendChild(logo);
 
-    ui.appendChild(this.createColorSelect());
-    ui.appendChild(this.createNumberOfDronesSelect());
-    ui.appendChild(this.createSessionDuration());
-    ui.appendChild(this.createStartGameButton());
+    container.appendChild(this.createColorSelect());
+    container.appendChild(this.createNumberOfDronesSelect());
+    container.appendChild(this.createSessionDuration());
+    container.appendChild(this.createStartGameButton());
+
+    const score = document.createElement('p');
+    score.style.marginLeft = 'auto';
+    score.style.marginRight = 'auto';
+    score.style.marginTop = '5px';
+    score.innerHTML = 'High Score: 12345';
+    container.appendChild(score);
 
     const githubLink = document.createElement('div');
     githubLink.innerHTML = '<a href="https://github.com/rvdleun/rogue-saber" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>';
-    ui.appendChild(githubLink);
+    container.appendChild(githubLink);
 
     document.body.appendChild(ui);
+
+    this.highScoreTextElement = score;
+    this.updateHighscoreText();
   }
 
   setBladeColor(colorSelect: HTMLSelectElement): void {
@@ -90,6 +112,7 @@ export default class MainMenu extends RE.Component {
     remotesController.setNumberOfDrones(parseInt(numberOfDrones));
 
     window.localStorage.setItem(LOCAL_STORAGE_KEY_NUMBER_OF_DRONES, numberOfDrones);
+    this.updateHighscoreText();
   }
 
   setSessionDuration(sessionDurationSelect: HTMLSelectElement): void {
@@ -97,6 +120,7 @@ export default class MainMenu extends RE.Component {
     window.localStorage.setItem(LOCAL_STORAGE_KEY_SESSION_DURATION, sessionDuration);
 
     Session.global.setDuration(parseFloat(sessionDuration) * 60);
+    this.updateHighscoreText();
   }
 
   private createColorSelect() {
@@ -114,7 +138,7 @@ export default class MainMenu extends RE.Component {
     const colorLabel = document.createElement('label');
     colorLabel.innerHTML = 'Blade color:';
     colorLabel.style.float = 'left';
-    colorLabel.style.marginLeft = '50px';
+    colorLabel.style.marginLeft = '20px';
     colorLabel.setAttribute('for', 'main-menu-color');
     colorDiv.appendChild(colorLabel);
 
@@ -160,20 +184,21 @@ export default class MainMenu extends RE.Component {
   private createNumberOfDronesSelect() {
     const numberOfDronesDiv = document.createElement('div');
     numberOfDronesDiv.style.display = 'block';
+    numberOfDronesDiv.style.float = 'left';
     numberOfDronesDiv.style.marginLeft = 'auto';
     numberOfDronesDiv.style.marginRight = 'auto';
     numberOfDronesDiv.style.marginTop = '25px';
     numberOfDronesDiv.style.padding = '15px 15px 5px 15px';
     numberOfDronesDiv.style.height = '50px';
-    numberOfDronesDiv.style.width = '750px';
+    numberOfDronesDiv.style.width = '350px';
     numberOfDronesDiv.style.border = 'solid 3px white';
     numberOfDronesDiv.style.borderRadius = '30px';
 
     const currentNumberOfDrones = parseInt(window.localStorage.getItem(LOCAL_STORAGE_KEY_NUMBER_OF_DRONES) as string) || this.defaultNumberOfDrones;
     const numberOfDronesLabel = document.createElement('label');
-    numberOfDronesLabel.innerHTML = 'Number of drones:';
+    numberOfDronesLabel.innerHTML = 'Drones:';
     numberOfDronesLabel.style.float = 'left';
-    numberOfDronesLabel.style.marginLeft = '50px';
+    numberOfDronesLabel.style.marginLeft = '20px';
     numberOfDronesLabel.setAttribute('for', 'main-menu-number-drones');
     numberOfDronesDiv.appendChild(numberOfDronesLabel);
 
@@ -187,7 +212,7 @@ export default class MainMenu extends RE.Component {
     numberOfDronesSelect.style.marginRight = '20px';
     numberOfDronesSelect.style.float = 'right';
     numberOfDronesSelect.style.height = '40px';
-    numberOfDronesSelect.style.width = '150px';
+    numberOfDronesSelect.style.width = '50px';
     numberOfDronesSelect.addEventListener('change', () => this.setNumberOfDrones(numberOfDronesSelect));
     numberOfDronesSelect.addEventListener('focus', () => numberOfDronesSelect.style.outline = 'none');
     numberOfDronesDiv.appendChild(numberOfDronesSelect);
@@ -212,20 +237,21 @@ export default class MainMenu extends RE.Component {
   private createSessionDuration() {
     const sessionDurationDiv = document.createElement('div');
     sessionDurationDiv.style.display = 'block';
+    sessionDurationDiv.style.float = 'right';
     sessionDurationDiv.style.marginLeft = 'auto';
     sessionDurationDiv.style.marginRight = 'auto';
     sessionDurationDiv.style.marginTop = '25px';
     sessionDurationDiv.style.padding = '15px 15px 5px 15px';
     sessionDurationDiv.style.height = '50px';
-    sessionDurationDiv.style.width = '750px';
+    sessionDurationDiv.style.width = '350px';
     sessionDurationDiv.style.border = 'solid 3px white';
     sessionDurationDiv.style.borderRadius = '30px';
 
     const currentSessionDuration = parseFloat(window.localStorage.getItem(LOCAL_STORAGE_KEY_SESSION_DURATION) as string) || this.defaultSessionDuration;
     const sessionDurationLabel = document.createElement('label');
-    sessionDurationLabel.innerHTML = 'Session duration:';
+    sessionDurationLabel.innerHTML = 'Duration:';
     sessionDurationLabel.style.float = 'left';
-    sessionDurationLabel.style.marginLeft = '50px';
+    sessionDurationLabel.style.marginLeft = '20px';
     sessionDurationLabel.setAttribute('for', 'main-menu-session-duration');
     sessionDurationDiv.appendChild(sessionDurationLabel);
 
@@ -239,15 +265,15 @@ export default class MainMenu extends RE.Component {
     sessionDurationSelect.style.marginRight = '20px';
     sessionDurationSelect.style.float = 'right';
     sessionDurationSelect.style.height = '40px';
-    sessionDurationSelect.style.width = '150px';
+    sessionDurationSelect.style.width = '125px';
     sessionDurationSelect.addEventListener('change', () => this.setSessionDuration(sessionDurationSelect));
     sessionDurationSelect.addEventListener('focus', () => sessionDurationSelect.style.outline = 'none');
     sessionDurationDiv.appendChild(sessionDurationSelect);
 
-    [0,.2,2.5,5].forEach(sessionDuration => {
+    [0,0.1,2.5,5].forEach(sessionDuration => {
       const option = document.createElement('option');
       option.setAttribute('value', sessionDuration.toString(10));
-      option.innerHTML = 0 ? 'Endless' : `${sessionDuration.toString(10)}min`;
+      option.innerHTML = sessionDuration === 0 ? 'Endless' : `${sessionDuration.toString(10)}min`;
       if (currentSessionDuration === sessionDuration) {
         option.setAttribute('selected', 'selected');
       }
@@ -268,41 +294,77 @@ export default class MainMenu extends RE.Component {
 
     const button = VRButton.createButton( renderer );
 
-    setTimeout(() => {
-      let hovering = false;
-      button.style.backgroundColor = 'rgba(50, 255, 50, .1)';
-      button.style.border = 'solid 3px white';
-      button.style.borderRadius = '30px';
-      button.style.color = 'white';
-      button.style.marginTop = '50px';
-      button.style.opacity = '1';
-      button.style.position = '';
-      button.style.fontFamily = 'fantasy';
-      button.style.fontSize = '32px';
-      button.innerHTML = 'Start Game';
-      button.style.height = '70px';
-      button.style.width = '750px';
-      button.style.transition = '2s background-color';
-      button.onmouseenter = function () { hovering = true };
-      button.onmouseleave = function () { hovering = false };
-
-      button.addEventListener('click', () => {
-        if (!this.showInstructions) {
-          return;
-        }
-
-        this.instructions.visible = true;
-        this.showInstructions = false;
-      });
-
-      let alpha = true;
-      setInterval(() => {
-        button.style.backgroundColor = `rgba(128, 255, 128, ${alpha || hovering ? .2 : .1})`;
-        alpha = !alpha;
-      }, 2000);
-    });
+    this.updateStartGamebutton(button);
 
     return button;
+  }
+
+  private updateStartGamebutton(button) {
+    if(button.innerHTML !== 'ENTER VR') {
+      setTimeout(() => this.updateStartGamebutton(button), 10);
+      return;
+    }
+
+    let hovering = false;
+    button.style.backgroundColor = 'rgba(50, 255, 50, .1)';
+    button.style.border = 'solid 3px white';
+    button.style.borderRadius = '30px';
+    button.style.color = 'white';
+    button.style.marginBottom = '5px';
+    button.style.marginTop = '15px';
+    button.style.opacity = '1';
+    button.style.position = '';
+    button.style.fontFamily = 'fantasy';
+    button.style.fontSize = '32px';
+    button.innerHTML = 'Start Game';
+    button.style.height = '70px';
+    button.style.width = '100%';
+    button.style.transition = '2s background-color';
+    button.onmouseenter = function () { hovering = true };
+    button.onmouseleave = function () { hovering = false };
+
+    button.addEventListener('click', () => {
+      if (!this.showInstructions) {
+        return;
+      }
+
+      this.instructions.visible = true;
+      this.showInstructions = false;
+    });
+
+    let alpha = true;
+    setInterval(() => {
+      button.style.backgroundColor = `rgba(128, 255, 128, ${alpha || hovering ? .2 : .1})`;
+      alpha = !alpha;
+    });
+  }
+
+  public saveHighscore(score: number) {
+    const currentHighScore = parseInt(this.getHighscore());
+    console.log(currentHighScore, score);
+    if (currentHighScore >= score) {
+      return;
+    }
+
+    console.log(this.determineHighscoreId(), score);
+    window.localStorage.setItem(this.determineHighscoreId(), score.toString());
+    this.updateHighscoreText();
+  }
+
+  private getHighscore() {
+    return window.localStorage.getItem(this.determineHighscoreId()) || '0';
+  }
+
+  private updateHighscoreText() {
+    const highScore = this.getHighscore();
+    this.highScoreTextElement.innerHTML = `High Score: ${highScore.padStart(6, '0')}`;
+  }
+
+  private determineHighscoreId() {
+    const duration = window.localStorage.getItem(LOCAL_STORAGE_KEY_SESSION_DURATION);
+    const numberOfDrones = window.localStorage.getItem(LOCAL_STORAGE_KEY_NUMBER_OF_DRONES);
+
+    return `${LOCAL_STORAGE_KEY_HIGH_SCORE_PREFIX}-${duration}-${numberOfDrones}`;
   }
 }
 

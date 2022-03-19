@@ -1,5 +1,6 @@
 import * as RE from 'rogue-engine';
 import { Runtime } from 'rogue-engine';
+import MainMenu from './MainMenu.re';
 
 export default class Session extends RE.Component {
   public static global: Session;
@@ -29,6 +30,8 @@ export default class Session extends RE.Component {
     this.timeLeft-=Runtime.deltaTime;
 
     if (this.timeLeft < 0) {
+      console.log(this);
+      MainMenu.global.saveHighscore(this.score);
       this.endSession();
     }
   }
@@ -42,7 +45,7 @@ export default class Session extends RE.Component {
   }
 
   setDuration(duration: number) {
-    this.score = 0;
+    this.score = 120;
     this.active = false;
     this.duration = duration;
     this.gameOver = false;
@@ -56,7 +59,7 @@ export default class Session extends RE.Component {
 
     this.active = true;
     this.gameOver = false;
-    this.score = 0;
+    this.score = 120;
     this.timeLeft = this.duration;
   }
 
