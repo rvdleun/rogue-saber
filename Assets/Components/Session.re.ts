@@ -45,7 +45,7 @@ export default class Session extends RE.Component {
   }
 
   setDuration(duration: number) {
-    this.score = 120;
+    this.score = 0;
     this.active = false;
     this.duration = duration;
     this.gameOver = false;
@@ -59,7 +59,7 @@ export default class Session extends RE.Component {
 
     this.active = true;
     this.gameOver = false;
-    this.score = 120;
+    this.score = 0;
     this.timeLeft = this.duration;
   }
 

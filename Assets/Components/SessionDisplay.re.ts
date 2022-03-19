@@ -10,10 +10,11 @@ export default class SessionDisplay extends RE.Component {
   @RE.props.object3d()
   public timeLeftObject;
 
-  private currentScore;
+  private currentScore = 0;
   private currentTimeLeft;
   private currentTimeVisible;
 
+  private nextScoreUpdate = 0;
   private scoreText: Text;
   private timeLeftBlink: number = .5;
   private timeLeftText: Text;
@@ -24,8 +25,24 @@ export default class SessionDisplay extends RE.Component {
   }
 
   update() {
-    if (this.currentScore !== Session.global.score) {
-      this.currentScore = Session.global.score;
+    this.nextScoreUpdate-=Runtime.deltaTime;
+
+    let updateScore = true;
+    while(this.nextScoreUpdate < 0) {
+      this.nextScoreUpdate+=.005;
+
+      if (this.currentScore < Session.global.score) {
+        this.currentScore++;
+        console.log(this.currentScore);
+      } else if (this.currentScore > Session.global.score) {
+        this.currentScore--;
+        console.log(this.currentScore);
+      } else {
+        updateScore = true;
+      }
+    }
+
+    if (updateScore) {
       this.scoreText.text = this.currentScore.toString().padStart(6, '0');
       this.scoreText.needsUpdate = true;
     }
