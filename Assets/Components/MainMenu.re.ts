@@ -4,6 +4,7 @@ import { Color, Mesh, MeshStandardMaterial, Object3D, PointLight } from 'three';
 import LightsaberGlow from './LightsaberGlow.re';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import RemotesController from './RemotesController.re';
+import Session from './Session.re';
 
 const LOCAL_STORAGE_KEY_BLADE_COLOR = 'rogue-saber.blade-color';
 const LOCAL_STORAGE_KEY_NUMBER_OF_DRONES = 'rogue-saber.number-of-drones';
@@ -94,6 +95,8 @@ export default class MainMenu extends RE.Component {
   setSessionDuration(sessionDurationSelect: HTMLSelectElement): void {
     const sessionDuration = sessionDurationSelect.value;
     window.localStorage.setItem(LOCAL_STORAGE_KEY_SESSION_DURATION, sessionDuration);
+
+    Session.global.setDuration(parseFloat(sessionDuration) * 60);
   }
 
   private createColorSelect() {
@@ -241,7 +244,7 @@ export default class MainMenu extends RE.Component {
     sessionDurationSelect.addEventListener('focus', () => sessionDurationSelect.style.outline = 'none');
     sessionDurationDiv.appendChild(sessionDurationSelect);
 
-    [0,1,2.5,5].forEach(sessionDuration => {
+    [0,.2,2.5,5].forEach(sessionDuration => {
       const option = document.createElement('option');
       option.setAttribute('value', sessionDuration.toString(10));
       option.innerHTML = 0 ? 'Endless' : `${sessionDuration.toString(10)}min`;

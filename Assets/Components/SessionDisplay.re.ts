@@ -29,7 +29,7 @@ export default class SessionDisplay extends RE.Component {
     }
 
     const timeLeft = Math.floor(Session.global.timeLeft);
-    if (timeLeft !== Session.global.timeLeft) {
+    if (timeLeft !== this.currentTimeLeft) {
       this.currentTimeLeft = timeLeft;
 
       const minutes = Math.floor(timeLeft / 60).toString();

@@ -1,6 +1,7 @@
 import * as RE from 'rogue-engine';
 import { Prop, Runtime } from 'rogue-engine';
 import { PointLight } from 'three';
+import Session from './Session.re';
 
 export default class LightsaberBlade extends RE.Component {
   public static active: boolean = false;
@@ -49,6 +50,12 @@ export default class LightsaberBlade extends RE.Component {
 
   toggle() {
     LightsaberBlade.active = !LightsaberBlade.active;
+
+    if (LightsaberBlade.active) {
+      Session.global.startSession();
+    } else {
+      Session.global.endSession();
+    }
   }
 }
 
