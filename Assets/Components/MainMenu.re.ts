@@ -270,7 +270,7 @@ export default class MainMenu extends RE.Component {
     sessionDurationSelect.addEventListener('focus', () => sessionDurationSelect.style.outline = 'none');
     sessionDurationDiv.appendChild(sessionDurationSelect);
 
-    [0,0.1,2.5,5].forEach(sessionDuration => {
+    [0,1,2.5,5].forEach(sessionDuration => {
       const option = document.createElement('option');
       option.setAttribute('value', sessionDuration.toString(10));
       option.innerHTML = sessionDuration === 0 ? 'Endless' : `${sessionDuration.toString(10)}min`;
