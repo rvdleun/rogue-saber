@@ -24,7 +24,7 @@ const fragmentShader = `
 `;
 
 export default class ForceLook extends RE.Component {
-  public static active: Boolean = true;
+  public static active: Boolean = false;
 
   colors: Color[] = [
     new Color(Math.random(), Math.random(), Math.random()),

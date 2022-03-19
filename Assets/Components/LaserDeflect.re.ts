@@ -1,6 +1,8 @@
 import * as RE from 'rogue-engine';
 import { PositionalAudio } from 'three';
 import { AudioAsset, Prop, Runtime } from 'rogue-engine';
+import Session from './Session.re';
+import Lightsaber from './Lightsaber.re';
 
 const assets = ['lasrhit1.wav', 'lasrhit2.WAV', 'lasrhit3.WAV', 'lasrhit4.WAV'].map(async audio => {
   return AudioAsset.fromFile(RE.getStaticPath(`Audio/${audio}`))
@@ -15,6 +17,8 @@ export default class LaserDeflect extends RE.Component {
   async start() {
     const asset = await assets[Math.floor(Math.random() * assets.length)];
     const audio = asset.getPositionalAudio();
+
+    Session.global.alterScore(Lightsaber.global.calculateDeflectScore());
 
     this.object3d.add(audio);
     audio.play();

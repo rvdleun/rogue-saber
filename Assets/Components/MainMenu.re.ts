@@ -245,7 +245,6 @@ export default class MainMenu extends RE.Component {
       const option = document.createElement('option');
       option.setAttribute('value', sessionDuration.toString(10));
       option.innerHTML = 0 ? 'Endless' : `${sessionDuration.toString(10)}min`;
-      console.log(currentSessionDuration, '===', sessionDuration, currentSessionDuration === sessionDuration);
       if (currentSessionDuration === sessionDuration) {
         option.setAttribute('selected', 'selected');
       }
