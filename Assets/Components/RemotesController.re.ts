@@ -4,6 +4,7 @@ import { getComponent, Prop, PropList, Runtime } from 'rogue-engine';
 import LightsaberBlade from './LightsaberBlade.re';
 import { Object3D } from 'three';
 import EnemyIndicator from './EnemyIndicator.re';
+import Session from './Session.re';
 
 export default class RemotesController extends RE.Component {
   @Prop('Boolean')
@@ -35,7 +36,7 @@ export default class RemotesController extends RE.Component {
       return;
     }
 
-    if (!this.alwaysFire && !LightsaberBlade.active ) {
+    if ((!this.alwaysFire && !LightsaberBlade.active) || Session.global.gameOver) {
       this.nextFire = 2 + Math.random() * 3;
       return;
     }

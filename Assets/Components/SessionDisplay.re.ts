@@ -1,5 +1,5 @@
 import * as RE from 'rogue-engine';
-import { getComponent } from 'rogue-engine';
+import { getComponent, Runtime } from 'rogue-engine';
 import Text from './Text.re';
 import Session from './Session.re';
 
@@ -12,8 +12,10 @@ export default class SessionDisplay extends RE.Component {
 
   private currentScore;
   private currentTimeLeft;
+  private currentTimeVisible;
 
   private scoreText: Text;
+  private timeLeftBlink: number = .5;
   private timeLeftText: Text;
 
   start() {
@@ -36,6 +38,14 @@ export default class SessionDisplay extends RE.Component {
       const seconds = (timeLeft - (minutes * 60)).toString();
       this.timeLeftText.text = `${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
       this.timeLeftText.needsUpdate = true;
+    }
+
+    this.timeLeftBlink -= Runtime.deltaTime;
+    if (this.timeLeftBlink < 0) {
+      this.currentTimeVisible = Session.global.gameOver ? !this.currentTimeVisible : true;
+      this.timeLeftText.object3d.visible = this.currentTimeVisible;
+
+      this.timeLeftBlink = 0.5;
     }
   }
 }

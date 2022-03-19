@@ -53,11 +53,11 @@ export default class Lightsaber extends RE.Component {
   }
 
   calculateDeflectScore() {
-    let points = 100;
+    let points = 50;
     Lightsaber.activeHand.getWorldPosition(currentPosition);
     if (this.lastScoreCalculation < 1) {
       const diff = Math.min(currentPosition.distanceTo(lastScorePosition), 1);
-      points*=diff;
+      points*=1 + diff;
     }
 
     lastScorePosition.copy(currentPosition);

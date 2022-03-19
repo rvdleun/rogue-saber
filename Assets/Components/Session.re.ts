@@ -43,19 +43,20 @@ export default class Session extends RE.Component {
 
   setDuration(duration: number) {
     this.score = 0;
+    this.active = false;
     this.duration = duration;
+    this.gameOver = false;
     this.timeLeft = duration;
   }
 
   startSession() {
-    console.log('Let us go', this.duration);
-
     if (this.duration === 0) {
       return;
     }
 
     this.active = true;
     this.gameOver = false;
+    this.score = 0;
     this.timeLeft = this.duration;
   }
 
